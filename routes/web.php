@@ -1,29 +1,55 @@
 <?php
 
+use App\Models\Kampus;
+use App\Support\TenantManager;
 use Illuminate\Support\Facades\Route;
 
-// Redirect root to login page
-Route::get('/', fn() => redirect()->route('login'));
+// Root: arahkan ke halaman login kampus aktif pertama
+Route::get('/', function () {
+    $kampus = Kampus::active()->orderBy('id')->first();
 
-// Redirect generic dashboard to role-specific dashboard
-Route::get('/dashboard', function () {
-    $routes = [
-        'superadmin'     => 'admin.dashboard',
-        'admin_fakultas' => 'admin.dashboard',
-        'dosen'          => 'dosen.dashboard',
-        'mahasiswa'      => 'mahasiswa.dashboard',
-    ];
+    if (! $kampus) {
+        return redirect()->route('login');
+    }
 
-    $role = auth()->user()->role;
+    app(TenantManager::class)->set($kampus);
 
-    return redirect()->route($routes[$role] ?? 'login');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    return redirect(tenant_route('login'));
+})->name('home');
 
-
-require __DIR__.'/auth.php';
+// Health endpoints tetap global (tanpa prefix kampus)
 require __DIR__.'/health.php';
-require __DIR__.'/notification.php';
-require __DIR__.'/profile.php';
-require __DIR__.'/admin/index.php';
-require __DIR__.'/dosen/index.php';
-require __DIR__.'/mahasiswa/index.php';
+
+// Panel pusat superadmin (global, mengelola seluruh kampus)
+require __DIR__.'/central/index.php';
+
+// Semua rute aplikasi berpola tenant: /{kampus}/...
+// {kampus} wajib, EnsureKampus middleware akan me-resolve & bind tenant.
+Route::group([
+    'prefix' => '{kampus}',
+    'where' => ['kampus' => '[a-z0-9-]+'],
+    'middleware' => ['tenant'],
+], function () {
+    // Redirect dashboard generik ke dashboard sesuai role
+    Route::get('dashboard', function () {
+        $routes = [
+            'superadmin' => 'admin.dashboard',
+            'admin_fakultas' => 'admin.dashboard',
+            'dosen' => 'dosen.dashboard',
+            'mahasiswa' => 'mahasiswa.dashboard',
+        ];
+
+        $role = auth()->user()->role;
+
+        return redirect()->route($routes[$role] ?? 'login');
+    })
+        ->middleware(['auth', 'verified'])
+        ->name('dashboard');
+
+    require __DIR__.'/auth.php';
+    require __DIR__.'/notification.php';
+    require __DIR__.'/profile.php';
+    require __DIR__.'/admin/index.php';
+    require __DIR__.'/dosen/index.php';
+    require __DIR__.'/mahasiswa/index.php';
+});

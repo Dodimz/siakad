@@ -82,17 +82,17 @@
             </td>
             <td class="py-4 px-5 text-right">
                 <div class="flex items-center justify-end gap-2">
-                    <a href="{{ url('dosen/bimbingan/krs/'.$krs->id) }}" class="inline-flex p-2 text-siakad-secondary hover:text-siakad-primary hover:bg-siakad-primary/10 rounded-lg transition">
+                    <a href="{{ tenant_url('dosen/bimbingan/krs/'.$krs->id) }}" class="inline-flex p-2 text-siakad-secondary hover:text-siakad-primary hover:bg-siakad-primary/10 rounded-lg transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                     </a>
                     @if($krs->status === 'pending')
-                    <form action="{{ url('dosen/bimbingan/krs/'.$krs->id.'/approve') }}" method="POST" class="inline">
+                    <form action="{{ tenant_url('dosen/bimbingan/krs/'.$krs->id.'/approve') }}" method="POST" class="inline">
                         @csrf
                         <button type="submit" class="p-2 text-siakad-secondary hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-700/30 rounded-lg transition" title="Approve">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                         </button>
                     </form>
-                    <button type="button" onclick="openRejectModal('{{ url('dosen/bimbingan/krs/'.$krs->id.'/reject') }}')" class="p-2 text-siakad-secondary hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-700/30 rounded-lg transition" title="Reject">
+                    <button type="button" onclick="openRejectModal('{{ tenant_url('dosen/bimbingan/krs/'.$krs->id.'/reject') }}')" class="p-2 text-siakad-secondary hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-700/30 rounded-lg transition" title="Reject">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                     @endif

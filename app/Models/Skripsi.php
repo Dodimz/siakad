@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Skripsi extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'skripsi';
 
     protected $fillable = [
+        'kampus_id',
         'mahasiswa_id',
         'pembimbing1_id',
         'pembimbing2_id',
@@ -42,15 +44,25 @@ class Skripsi extends Model
 
     // Status constants
     const STATUS_PENGAJUAN = 'pengajuan';
+
     const STATUS_REVIEW = 'review';
+
     const STATUS_DITOLAK = 'ditolak';
+
     const STATUS_DITERIMA = 'diterima';
+
     const STATUS_BIMBINGAN = 'bimbingan';
+
     const STATUS_SEMINAR_PROPOSAL = 'seminar_proposal';
+
     const STATUS_PENELITIAN = 'penelitian';
+
     const STATUS_SEMINAR_HASIL = 'seminar_hasil';
+
     const STATUS_SIDANG = 'sidang';
+
     const STATUS_REVISI = 'revisi';
+
     const STATUS_SELESAI = 'selesai';
 
     public static function getStatusList(): array
@@ -77,7 +89,7 @@ class Skripsi extends Model
 
     public function getStatusColorAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             self::STATUS_PENGAJUAN, self::STATUS_REVIEW => 'amber',
             self::STATUS_DITOLAK => 'red',
             self::STATUS_DITERIMA, self::STATUS_BIMBINGAN, self::STATUS_PENELITIAN => 'blue',
@@ -103,6 +115,7 @@ class Skripsi extends Model
             self::STATUS_REVISI => 95,
             self::STATUS_SELESAI => 100,
         ];
+
         return $progressMap[$this->status] ?? 0;
     }
 

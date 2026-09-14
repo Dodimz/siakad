@@ -7,7 +7,7 @@ test('profile page is displayed', function () {
 
     $response = $this
         ->actingAs($user)
-        ->get('/profile');
+        ->get($this->tenantPath('/profile'));
 
     $response->assertOk();
 });
@@ -17,14 +17,14 @@ test('profile information can be updated', function () {
 
     $response = $this
         ->actingAs($user)
-        ->patch('/profile', [
+        ->patch($this->tenantPath('/profile'), [
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
 
     $response
         ->assertSessionHasNoErrors()
-        ->assertRedirect('/profile');
+        ->assertRedirect($this->tenantPath('/profile'));
 
     $user->refresh();
 
@@ -38,14 +38,14 @@ test('email verification status is unchanged when the email address is unchanged
 
     $response = $this
         ->actingAs($user)
-        ->patch('/profile', [
+        ->patch($this->tenantPath('/profile'), [
             'name' => 'Test User',
             'email' => $user->email,
         ]);
 
     $response
         ->assertSessionHasNoErrors()
-        ->assertRedirect('/profile');
+        ->assertRedirect($this->tenantPath('/profile'));
 
     $this->assertNotNull($user->refresh()->email_verified_at);
 });
@@ -55,7 +55,7 @@ test('user can delete their account', function () {
 
     $response = $this
         ->actingAs($user)
-        ->delete('/profile', [
+        ->delete($this->tenantPath('/profile'), [
             'password' => 'password',
         ]);
 
@@ -72,14 +72,14 @@ test('correct password must be provided to delete account', function () {
 
     $response = $this
         ->actingAs($user)
-        ->from('/profile')
-        ->delete('/profile', [
+        ->from($this->tenantPath('/profile'))
+        ->delete($this->tenantPath('/profile'), [
             'password' => 'wrong-password',
         ]);
 
     $response
         ->assertSessionHasErrorsIn('userDeletion', 'password')
-        ->assertRedirect('/profile');
+        ->assertRedirect($this->tenantPath('/profile'));
 
     $this->assertNotNull($user->fresh());
 });

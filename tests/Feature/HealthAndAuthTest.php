@@ -32,19 +32,19 @@ test('detailed health endpoint checks all dependencies', function () {
 });
 
 test('login page loads successfully', function () {
-    $response = $this->get('/login');
+    $response = $this->get($this->tenantPath('/login'));
 
     $response->assertStatus(200);
 });
 
-test('register page loads successfully', function () {
-    $response = $this->get('/register');
+test('register page is disabled', function () {
+    $response = $this->get($this->tenantPath('/register'));
 
-    $response->assertStatus(200);
+    $response->assertStatus(404);
 });
 
 test('unauthenticated user is redirected from protected routes', function () {
-    $response = $this->get('/admin/dashboard');
+    $response = $this->get($this->tenantPath('/admin/dashboard'));
 
-    $response->assertRedirect('/login');
+    $response->assertRedirect(route('login'));
 });

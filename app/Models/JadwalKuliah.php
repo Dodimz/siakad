@@ -2,15 +2,19 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JadwalKuliah extends Model
 {
+    use BelongsToTenant;
+
     protected $table = 'jadwal_kuliah';
 
     protected $fillable = [
+        'kampus_id',
         'kelas_id',
         'hari',
         'jam_mulai',
@@ -37,7 +41,7 @@ class JadwalKuliah extends Model
             return false;
         }
 
-        return !($this->jam_selesai <= $other->jam_mulai || $this->jam_mulai >= $other->jam_selesai);
+        return ! ($this->jam_selesai <= $other->jam_mulai || $this->jam_mulai >= $other->jam_selesai);
     }
 
     /**

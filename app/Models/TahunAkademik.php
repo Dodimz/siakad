@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class TahunAkademik extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'tahun_akademik';
 
     protected $fillable = [
+        'kampus_id',
         'tahun',
         'semester',
         'is_active',
@@ -52,12 +54,13 @@ class TahunAkademik extends Model
      */
     public function isSemesterActive(): bool
     {
-        if (!$this->tanggal_mulai || !$this->tanggal_selesai) {
+        if (! $this->tanggal_mulai || ! $this->tanggal_selesai) {
             return $this->is_active;
         }
-        
+
         $today = now()->toDateString();
-        return $today >= $this->tanggal_mulai->toDateString() 
+
+        return $today >= $this->tanggal_mulai->toDateString()
             && $today <= $this->tanggal_selesai->toDateString();
     }
 
@@ -66,12 +69,13 @@ class TahunAkademik extends Model
      */
     public function isKrsPeriod(): bool
     {
-        if (!$this->tanggal_krs_mulai || !$this->tanggal_krs_selesai) {
+        if (! $this->tanggal_krs_mulai || ! $this->tanggal_krs_selesai) {
             return $this->is_active;
         }
-        
+
         $today = now()->toDateString();
-        return $today >= $this->tanggal_krs_mulai->toDateString() 
+
+        return $today >= $this->tanggal_krs_mulai->toDateString()
             && $today <= $this->tanggal_krs_selesai->toDateString();
     }
 
@@ -83,4 +87,3 @@ class TahunAkademik extends Model
         return "{$this->tahun} {$this->semester}";
     }
 }
-

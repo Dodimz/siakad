@@ -7,25 +7,25 @@
     <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <!-- Status Tabs -->
         <div class="flex items-center gap-1 border-b border-siakad-light dark:border-gray-700 overflow-x-auto">
-            <a href="{{ url('admin/krs-approval') }}" class="px-4 py-3 text-sm font-medium border-b-2 transition whitespace-nowrap {{ !request('status') || request('status') === 'pending' ? 'text-siakad-primary dark:text-blue-400 border-siakad-primary dark:border-blue-400' : 'text-siakad-secondary dark:text-gray-400 border-transparent hover:text-siakad-dark dark:hover:text-gray-300' }}">
+            <a href="{{ tenant_url('admin/krs-approval') }}" class="px-4 py-3 text-sm font-medium border-b-2 transition whitespace-nowrap {{ !request('status') || request('status') === 'pending' ? 'text-siakad-primary dark:text-blue-400 border-siakad-primary dark:border-blue-400' : 'text-siakad-secondary dark:text-gray-400 border-transparent hover:text-siakad-dark dark:hover:text-gray-300' }}">
                 Pending
                 @if($statusCounts['pending'] > 0)
                 <span class="ml-1 px-2 py-0.5 text-[10px] font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 rounded-full">{{ $statusCounts['pending'] }}</span>
                 @endif
             </a>
-            <a href="{{ url('admin/krs-approval?status=approved') }}" class="px-4 py-3 text-sm font-medium border-b-2 transition whitespace-nowrap {{ request('status') === 'approved' ? 'text-siakad-primary dark:text-blue-400 border-siakad-primary dark:border-blue-400' : 'text-siakad-secondary dark:text-gray-400 border-transparent hover:text-siakad-dark dark:hover:text-gray-300' }}">
+            <a href="{{ tenant_url('admin/krs-approval?status=approved') }}" class="px-4 py-3 text-sm font-medium border-b-2 transition whitespace-nowrap {{ request('status') === 'approved' ? 'text-siakad-primary dark:text-blue-400 border-siakad-primary dark:border-blue-400' : 'text-siakad-secondary dark:text-gray-400 border-transparent hover:text-siakad-dark dark:hover:text-gray-300' }}">
                 Approved
             </a>
-            <a href="{{ url('admin/krs-approval?status=rejected') }}" class="px-4 py-3 text-sm font-medium border-b-2 transition whitespace-nowrap {{ request('status') === 'rejected' ? 'text-siakad-primary dark:text-blue-400 border-siakad-primary dark:border-blue-400' : 'text-siakad-secondary dark:text-gray-400 border-transparent hover:text-siakad-dark dark:hover:text-gray-300' }}">
+            <a href="{{ tenant_url('admin/krs-approval?status=rejected') }}" class="px-4 py-3 text-sm font-medium border-b-2 transition whitespace-nowrap {{ request('status') === 'rejected' ? 'text-siakad-primary dark:text-blue-400 border-siakad-primary dark:border-blue-400' : 'text-siakad-secondary dark:text-gray-400 border-transparent hover:text-siakad-dark dark:hover:text-gray-300' }}">
                 Rejected
             </a>
-            <a href="{{ url('admin/krs-approval?status=all') }}" class="px-4 py-3 text-sm font-medium border-b-2 transition whitespace-nowrap {{ request('status') === 'all' ? 'text-siakad-primary dark:text-blue-400 border-siakad-primary dark:border-blue-400' : 'text-siakad-secondary dark:text-gray-400 border-transparent hover:text-siakad-dark dark:hover:text-gray-300' }}">
+            <a href="{{ tenant_url('admin/krs-approval?status=all') }}" class="px-4 py-3 text-sm font-medium border-b-2 transition whitespace-nowrap {{ request('status') === 'all' ? 'text-siakad-primary dark:text-blue-400 border-siakad-primary dark:border-blue-400' : 'text-siakad-secondary dark:text-gray-400 border-transparent hover:text-siakad-dark dark:hover:text-gray-300' }}">
                 Semua
             </a>
         </div>
 
         <!-- Search Form -->
-        <form action="{{ url('admin/krs-approval') }}" method="GET" class="flex flex-col sm:flex-row gap-3">
+        <form action="{{ tenant_url('admin/krs-approval') }}" method="GET" class="flex flex-col sm:flex-row gap-3">
             @if(request('status'))
             <input type="hidden" name="status" value="{{ request('status') }}">
             @endif

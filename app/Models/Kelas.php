@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Kelas extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'kelas';
 
     protected $fillable = [
+        'kampus_id',
         'mata_kuliah_id',
         'dosen_id',
         'tahun_akademik_id',
@@ -69,4 +71,3 @@ class Kelas extends Model
         return $this->hasMany(Tugas::class);
     }
 }
-

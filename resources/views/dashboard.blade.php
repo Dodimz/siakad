@@ -55,7 +55,7 @@
     <!-- Quick Actions -->
     <h3 class="text-lg font-semibold text-slate-800 mb-4">Aksi Cepat</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <a href="{{ url('admin/fakultas') }}" class="group flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-indigo-300 hover:shadow-lg transition-all duration-300">
+        <a href="{{ tenant_url('admin/fakultas') }}" class="group flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-indigo-300 hover:shadow-lg transition-all duration-300">
             <div class="w-10 h-10 rounded-lg bg-indigo-100 group-hover:bg-indigo-500 flex items-center justify-center transition-colors">
                 <svg class="w-5 h-5 text-indigo-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
             </div>
@@ -64,7 +64,7 @@
                 <p class="text-sm text-slate-500">Kelola data fakultas</p>
             </div>
         </a>
-        <a href="{{ url('admin/prodi') }}" class="group flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-emerald-300 hover:shadow-lg transition-all duration-300">
+        <a href="{{ tenant_url('admin/prodi') }}" class="group flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-emerald-300 hover:shadow-lg transition-all duration-300">
             <div class="w-10 h-10 rounded-lg bg-emerald-100 group-hover:bg-emerald-500 flex items-center justify-center transition-colors">
                 <svg class="w-5 h-5 text-emerald-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
             </div>
@@ -73,7 +73,7 @@
                 <p class="text-sm text-slate-500">Kelola program studi</p>
             </div>
         </a>
-        <a href="{{ url('admin/mata-kuliah') }}" class="group flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-amber-300 hover:shadow-lg transition-all duration-300">
+        <a href="{{ tenant_url('admin/mata-kuliah') }}" class="group flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-amber-300 hover:shadow-lg transition-all duration-300">
             <div class="w-10 h-10 rounded-lg bg-amber-100 group-hover:bg-amber-500 flex items-center justify-center transition-colors">
                 <svg class="w-5 h-5 text-amber-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
             </div>
@@ -82,7 +82,7 @@
                 <p class="text-sm text-slate-500">Kelola mata kuliah</p>
             </div>
         </a>
-        <a href="{{ url('admin/kelas') }}" class="group flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-rose-300 hover:shadow-lg transition-all duration-300">
+        <a href="{{ tenant_url('admin/kelas') }}" class="group flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-rose-300 hover:shadow-lg transition-all duration-300">
             <div class="w-10 h-10 rounded-lg bg-rose-100 group-hover:bg-rose-500 flex items-center justify-center transition-colors">
                 <svg class="w-5 h-5 text-rose-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
             </div>
@@ -120,7 +120,7 @@
             </div>
         </div>
         <div>
-            <a href="{{ url('mahasiswa/krs') }}" class="block h-full bg-white rounded-2xl p-6 border border-slate-200 hover:border-indigo-300 hover:shadow-xl transition-all duration-300">
+            <a href="{{ tenant_url('mahasiswa/krs') }}" class="block h-full bg-white rounded-2xl p-6 border border-slate-200 hover:border-indigo-300 hover:shadow-xl transition-all duration-300">
                 <div class="w-14 h-14 rounded-xl bg-indigo-100 flex items-center justify-center mb-4">
                     <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                 </div>
@@ -164,7 +164,7 @@
                 </div>
             </div>
         </div>
-        <a href="{{ url('dosen/penilaian') }}" class="stat-card bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white">
+        <a href="{{ tenant_url('dosen/penilaian') }}" class="stat-card bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium opacity-90">Mulai Input Nilai</p>

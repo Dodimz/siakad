@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Mahasiswa extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'mahasiswa';
 
     protected $fillable = [
+        'kampus_id',
         'user_id',
         'nim',
         'prodi_id',
@@ -65,5 +67,3 @@ class Mahasiswa extends Model
         return $this->hasMany(TugasSubmission::class);
     }
 }
-
-

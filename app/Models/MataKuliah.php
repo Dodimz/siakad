@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class MataKuliah extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'mata_kuliah';
 
     protected $fillable = [
+        'kampus_id',
         'kode_mk',
         'nama_mk',
         'sks',
@@ -29,4 +31,3 @@ class MataKuliah extends Model
         return $this->hasMany(Kelas::class);
     }
 }
-

@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class TugasSubmission extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'tugas_submission';
 
     protected $fillable = [
+        'kampus_id',
         'tugas_id',
         'mahasiswa_id',
         'file_path',
@@ -66,9 +68,11 @@ class TugasSubmission extends Model
      */
     public function getGradeLetterAttribute(): ?string
     {
-        if ($this->nilai === null) return null;
-        
-        return match(true) {
+        if ($this->nilai === null) {
+            return null;
+        }
+
+        return match (true) {
             $this->nilai >= 85 => 'A',
             $this->nilai >= 70 => 'B',
             $this->nilai >= 55 => 'C',

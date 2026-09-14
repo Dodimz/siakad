@@ -1,7 +1,4 @@
-@extends('layouts.guest')
-
-@section('content')
-<div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-siakad-900 via-siakad-800 to-siakad-900">
+<x-guest-layout>
     <div class="text-center px-6">
         <h1 class="text-9xl font-bold text-yellow-500">503</h1>
         <h2 class="text-2xl font-semibold text-white mt-4">Sedang Dalam Pemeliharaan</h2>
@@ -15,5 +12,4 @@
             <span>Sedang proses...</span>
         </div>
     </div>
-</div>
-@endsection
+</x-guest-layout>

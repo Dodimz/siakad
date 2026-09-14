@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AiConversationLog extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
+        'kampus_id',
         'user_id',
         'mahasiswa_id',
         'session_id',
@@ -62,9 +66,12 @@ class AiConversationLog extends Model
     public static function guardTriggerRate(): float
     {
         $total = static::count();
-        if ($total === 0) return 0;
-        
+        if ($total === 0) {
+            return 0;
+        }
+
         $triggered = static::where('guard_applied', true)->count();
+
         return round(($triggered / $total) * 100, 2);
     }
 }

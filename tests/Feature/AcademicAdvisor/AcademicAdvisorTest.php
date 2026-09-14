@@ -2,31 +2,36 @@
 
 namespace Tests\Feature\AcademicAdvisor;
 
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Mahasiswa;
-use App\Models\Prodi;
-use App\Models\Fakultas;
 use App\Models\Dosen;
-use App\Models\MataKuliah;
+use App\Models\Fakultas;
 use App\Models\Kelas;
 use App\Models\Krs;
 use App\Models\KrsDetail;
+use App\Models\Mahasiswa;
+use App\Models\MataKuliah;
 use App\Models\Nilai;
+use App\Models\Prodi;
 use App\Models\TahunAkademik;
+use App\Models\User;
 use App\Services\AcademicAdvisor\AdvisorContextBuilder;
 use App\Services\AcademicAdvisor\AdvisorGuards;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class AcademicAdvisorTest extends TestCase
 {
     use RefreshDatabase;
 
     protected AdvisorContextBuilder $contextBuilder;
+
     protected AdvisorGuards $guards;
+
     protected Mahasiswa $mahasiswa;
+
     protected TahunAkademik $activeTahunAkademik;
+
     protected Dosen $dosen;
+
     protected Prodi $prodi;
 
     protected function setUp(): void
@@ -146,17 +151,20 @@ class AcademicAdvisorTest extends TestCase
             $sks = min(3, $targetSks - $sksCreated);
 
             $mk = MataKuliah::create([
-                'kode_mk' => 'MK' . str_pad($courseNum, 3, '0', STR_PAD_LEFT),
-                'nama_mk' => 'Mata Kuliah ' . $courseNum,
+                'kode_mk' => 'MK'.str_pad($courseNum, 3, '0', STR_PAD_LEFT),
+                'nama_mk' => 'Mata Kuliah '.$courseNum,
                 'sks' => $sks,
                 'semester' => $semesterNum,
                 'prodi_id' => $this->prodi->id,
                 'is_wajib' => true,
             ]);
 
+            $period = intdiv($courseNum - 1, 2);
+            $year = 2008 + $period;
+
             $tahunAkademik = TahunAkademik::create([
-                'tahun' => '2023/2024',
-                'semester' => $semesterNum % 2 == 1 ? 'Ganjil' : 'Genap',
+                'tahun' => $year.'/'.($year + 1),
+                'semester' => $courseNum % 2 == 1 ? 'Ganjil' : 'Genap',
                 'is_active' => false,
                 'tanggal_mulai' => now()->subYear(),
                 'tanggal_selesai' => now()->subMonths(6),
@@ -261,12 +269,12 @@ class AcademicAdvisorTest extends TestCase
 
         // Also verify it's in curriculum array
         $this->assertArrayHasKey('curriculum', $context);
-        
+
         $semester7 = collect($context['curriculum'])->firstWhere('semester', 7);
         $this->assertNotNull($semester7, 'Semester 7 should exist in curriculum');
 
         $bigDataInCurriculum = collect($semester7['mata_kuliah'])
-            ->first(fn($mk) => str_contains($mk['nama'], 'Big Data'));
+            ->first(fn ($mk) => str_contains($mk['nama'], 'Big Data'));
         $this->assertNotNull($bigDataInCurriculum, 'Big Data should be in semester 7 curriculum');
         $this->assertEquals(3, $bigDataInCurriculum['sks']);
     }
@@ -418,7 +426,7 @@ class AcademicAdvisorTest extends TestCase
         $this->assertGreaterThan(0, $availableCourses->count(), 'Should have available courses from curriculum');
 
         // Specifically check Big Data is available (not completed, not enrolled)
-        $bigData = $statuses->first(fn($c) => str_contains($c['nama'], 'Big Data'));
+        $bigData = $statuses->first(fn ($c) => str_contains($c['nama'], 'Big Data'));
         $this->assertNotNull($bigData, 'Big Data should exist in course statuses');
         $this->assertEquals('TERSEDIA_DI_KURIKULUM', $bigData['status']);
         $this->assertEquals(7, $bigData['semester']);
@@ -438,7 +446,7 @@ class AcademicAdvisorTest extends TestCase
         // Should throw with invalid context
         $this->expectException(\InvalidArgumentException::class);
         $this->guards->assertRulesPresent([
-            'prodi_rules' => ['graduation_total_sks' => 0]
+            'prodi_rules' => ['graduation_total_sks' => 0],
         ]);
     }
 

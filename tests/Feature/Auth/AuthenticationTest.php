@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 uses(RefreshDatabase::class);
 
 test('login screen can be rendered', function () {
-    $response = $this->get('/login');
+    $response = $this->get($this->tenantPath('/login'));
 
     $response->assertStatus(200);
     $response->assertViewIs('auth.login');
@@ -20,13 +20,13 @@ test('users can authenticate using the login screen', function () {
         'password' => Hash::make('password'),
     ]);
 
-    $response = $this->post('/login', [
+    $response = $this->post($this->tenantPath('/login'), [
         'email' => $user->email,
         'password' => 'password',
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard'));
+    $response->assertRedirect(route('mahasiswa.dashboard'));
 });
 
 test('users can not authenticate with invalid password', function () {
@@ -34,7 +34,7 @@ test('users can not authenticate with invalid password', function () {
         'password' => Hash::make('password'),
     ]);
 
-    $response = $this->post('/login', [
+    $response = $this->post($this->tenantPath('/login'), [
         'email' => $user->email,
         'password' => 'wrong-password',
     ]);
@@ -44,7 +44,7 @@ test('users can not authenticate with invalid password', function () {
 });
 
 test('users can not authenticate with invalid email', function () {
-    $response = $this->post('/login', [
+    $response = $this->post($this->tenantPath('/login'), [
         'email' => 'nonexistent@test.com',
         'password' => 'password',
     ]);
@@ -54,7 +54,7 @@ test('users can not authenticate with invalid email', function () {
 });
 
 test('login requires email', function () {
-    $response = $this->post('/login', [
+    $response = $this->post($this->tenantPath('/login'), [
         'email' => '',
         'password' => 'password',
     ]);
@@ -65,7 +65,7 @@ test('login requires email', function () {
 test('login requires password', function () {
     $user = User::factory()->create();
 
-    $response = $this->post('/login', [
+    $response = $this->post($this->tenantPath('/login'), [
         'email' => $user->email,
         'password' => '',
     ]);
@@ -79,7 +79,7 @@ test('users can logout', function () {
     $this->actingAs($user);
     $this->assertAuthenticated();
 
-    $response = $this->post('/logout');
+    $response = $this->post($this->tenantPath('/logout'));
 
     $this->assertGuest();
     $response->assertRedirect('/');
@@ -88,71 +88,25 @@ test('users can logout', function () {
 test('authenticated users are redirected from login page', function () {
     $user = User::factory()->create();
 
-    $response = $this->actingAs($user)->get('/login');
+    $response = $this->actingAs($user)->get($this->tenantPath('/login'));
 
     $response->assertRedirect(route('dashboard'));
 });
 
-test('users can view registration page', function () {
-    $response = $this->get('/register');
+test('users cannot view registration page when registration is disabled', function () {
+    $response = $this->get($this->tenantPath('/register'));
 
-    $response->assertStatus(200);
-    $response->assertViewIs('auth.register');
+    $response->assertStatus(404);
 });
 
-test('users can register with valid data', function () {
-    $response = $this->post('/register', [
+test('users cannot register when registration is disabled', function () {
+    $response = $this->post($this->tenantPath('/register'), [
         'name' => 'Test User',
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
     ]);
 
-    $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard'));
-    
-    $this->assertDatabaseHas('users', [
-        'email' => 'test@example.com',
-        'name' => 'Test User',
-    ]);
-});
-
-test('users cannot register with existing email', function () {
-    $existingUser = User::factory()->create([
-        'email' => 'existing@example.com',
-    ]);
-
-    $response = $this->post('/register', [
-        'name' => 'Test User',
-        'email' => 'existing@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
-    ]);
-
-    $response->assertSessionHasErrors(['email']);
     $this->assertGuest();
-});
-
-test('registration requires password confirmation', function () {
-    $response = $this->post('/register', [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'different-password',
-    ]);
-
-    $response->assertSessionHasErrors(['password']);
-    $this->assertGuest();
-});
-
-test('registration requires minimum password length', function () {
-    $response = $this->post('/register', [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'password' => '123',
-        'password_confirmation' => '123',
-    ]);
-
-    $response->assertSessionHasErrors(['password']);
-    $this->assertGuest();
+    $response->assertStatus(404);
 });

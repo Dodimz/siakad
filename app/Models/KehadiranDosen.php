@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class KehadiranDosen extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'kehadiran_dosen';
 
     protected $fillable = [
+        'kampus_id',
         'dosen_id',
         'jadwal_kuliah_id',
         'pertemuan_id',
@@ -28,9 +30,13 @@ class KehadiranDosen extends Model
     ];
 
     const STATUS_HADIR = 'hadir';
+
     const STATUS_IZIN = 'izin';
+
     const STATUS_SAKIT = 'sakit';
+
     const STATUS_TUGAS = 'tugas';
+
     const STATUS_ALPA = 'alpa';
 
     public static function getStatusList(): array
@@ -46,7 +52,7 @@ class KehadiranDosen extends Model
 
     public function getStatusColorAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             self::STATUS_HADIR => 'emerald',
             self::STATUS_IZIN => 'blue',
             self::STATUS_SAKIT => 'amber',

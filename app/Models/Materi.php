@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Materi extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'materi';
 
     protected $fillable = [
+        'kampus_id',
         'pertemuan_id',
         'judul',
         'deskripsi',
@@ -38,18 +40,20 @@ class Materi extends Model
      */
     public function getFormattedFileSizeAttribute(): string
     {
-        if (!$this->file_size) return '-';
-        
+        if (! $this->file_size) {
+            return '-';
+        }
+
         $bytes = $this->file_size;
         $units = ['B', 'KB', 'MB', 'GB'];
         $i = 0;
-        
+
         while ($bytes >= 1024 && $i < count($units) - 1) {
             $bytes /= 1024;
             $i++;
         }
-        
-        return round($bytes, 2) . ' ' . $units[$i];
+
+        return round($bytes, 2).' '.$units[$i];
     }
 
     /**
@@ -57,7 +61,7 @@ class Materi extends Model
      */
     public function isFile(): bool
     {
-        return !empty($this->file_path);
+        return ! empty($this->file_path);
     }
 
     /**
@@ -65,7 +69,7 @@ class Materi extends Model
      */
     public function isExternalLink(): bool
     {
-        return !empty($this->link_external);
+        return ! empty($this->link_external);
     }
 
     /**
@@ -74,8 +78,8 @@ class Materi extends Model
     public function getFileIconAttribute(): string
     {
         $type = $this->file_type ?? '';
-        
-        return match(true) {
+
+        return match (true) {
             str_contains($type, 'pdf') => 'pdf',
             str_contains($type, 'word') || str_contains($type, 'doc') => 'doc',
             str_contains($type, 'excel') || str_contains($type, 'sheet') => 'xls',

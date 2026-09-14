@@ -46,7 +46,7 @@
                     </div>
                 </div>
 
-                <a href="{{ url('admin/krs-approval') }}" class="mt-6 block text-center text-sm text-siakad-secondary dark:text-gray-400 hover:text-siakad-primary dark:hover:text-blue-400 transition">
+                <a href="{{ tenant_url('admin/krs-approval') }}" class="mt-6 block text-center text-sm text-siakad-secondary dark:text-gray-400 hover:text-siakad-primary dark:hover:text-blue-400 transition">
                     ← Kembali ke daftar
                 </a>
             </div>

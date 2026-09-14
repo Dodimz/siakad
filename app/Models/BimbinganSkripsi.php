@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class BimbinganSkripsi extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'bimbingan_skripsi';
 
     protected $fillable = [
+        'kampus_id',
         'skripsi_id',
         'dosen_id',
         'tanggal_bimbingan',
@@ -26,12 +28,14 @@ class BimbinganSkripsi extends Model
     ];
 
     const STATUS_MENUNGGU = 'menunggu';
+
     const STATUS_DISETUJUI = 'disetujui';
+
     const STATUS_REVISI = 'revisi';
 
     public function getStatusColorAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             self::STATUS_MENUNGGU => 'amber',
             self::STATUS_DISETUJUI => 'emerald',
             self::STATUS_REVISI => 'red',
@@ -41,7 +45,7 @@ class BimbinganSkripsi extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             self::STATUS_MENUNGGU => 'Menunggu Review',
             self::STATUS_DISETUJUI => 'Disetujui',
             self::STATUS_REVISI => 'Perlu Revisi',

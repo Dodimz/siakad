@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Dosen extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'dosen';
 
     protected $fillable = [
+        'kampus_id',
         'user_id',
         'nidn',
         'prodi_id',
@@ -69,4 +71,3 @@ class Dosen extends Model
         return $this->hasMany(KehadiranDosen::class);
     }
 }
-

@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ActivityLog extends Model
 {
+    use BelongsToTenant;
+
     protected $table = 'activity_log';
 
     protected $fillable = [
+        'kampus_id',
         'user_id',
         'action',
         'model_type',
@@ -36,6 +40,7 @@ class ActivityLog extends Model
         if ($this->model_type && $this->model_id) {
             return $this->model_type::find($this->model_id);
         }
+
         return null;
     }
 }

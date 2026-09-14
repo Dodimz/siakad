@@ -1,19 +1,19 @@
 <?php
 
-test('registration screen can be rendered', function () {
-    $response = $this->get('/register');
+test('registration screen cannot be rendered when registration is disabled', function () {
+    $response = $this->get($this->tenantPath('/register'));
 
-    $response->assertStatus(200);
+    $response->assertStatus(404);
 });
 
-test('new users can register', function () {
-    $response = $this->post('/register', [
+test('users cannot register through the public endpoint', function () {
+    $response = $this->post($this->tenantPath('/register'), [
         'name' => 'Test User',
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
     ]);
 
-    $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $this->assertGuest();
+    $response->assertStatus(404);
 });

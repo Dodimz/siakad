@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class Tugas extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'tugas';
 
     protected $fillable = [
+        'kampus_id',
         'kelas_id',
         'judul',
         'deskripsi',
@@ -52,7 +54,7 @@ class Tugas extends Model
      */
     public function isOpen(): bool
     {
-        return $this->is_active && !$this->isOverdue();
+        return $this->is_active && ! $this->isOverdue();
     }
 
     /**
@@ -63,7 +65,7 @@ class Tugas extends Model
         if ($this->isOverdue()) {
             return 'Sudah lewat';
         }
-        
+
         return $this->deadline->diffForHumans(['parts' => 2]);
     }
 
@@ -99,12 +101,12 @@ class Tugas extends Model
         $bytes = $this->max_file_size;
         $units = ['B', 'KB', 'MB', 'GB'];
         $i = 0;
-        
+
         while ($bytes >= 1024 && $i < count($units) - 1) {
             $bytes /= 1024;
             $i++;
         }
-        
-        return round($bytes, 1) . ' ' . $units[$i];
+
+        return round($bytes, 1).' '.$units[$i];
     }
 }

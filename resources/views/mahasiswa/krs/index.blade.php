@@ -35,7 +35,7 @@
             
             @if($krs->status == 'draft')
             <div class="mt-5 pt-5 border-t border-white/20">
-                <form action="{{ url('mahasiswa/krs/submit') }}" method="POST" class="flex items-center justify-between">
+                <form action="{{ tenant_url('mahasiswa/krs/submit') }}" method="POST" class="flex items-center justify-between">
                     @csrf
                     <p class="text-sm opacity-80">Setelah diajukan, KRS tidak dapat diubah lagi.</p>
                     <button type="submit" onclick="return confirm('Yakin ingin mengajukan KRS? Anda tidak dapat mengubah lagi setelah ini.')"
@@ -51,7 +51,7 @@
                         <p class="text-sm font-semibold text-red-200 mb-1">❌ KRS Ditolak</p>
                         <p class="text-sm opacity-80">{{ $krs->catatan ?? 'Silakan revisi KRS Anda dan ajukan kembali.' }}</p>
                     </div>
-                    <form action="{{ url('mahasiswa/krs/revise') }}" method="POST">
+                    <form action="{{ tenant_url('mahasiswa/krs/revise') }}" method="POST">
                         @csrf
                         <button type="submit" onclick="return confirm('Ubah status KRS menjadi draft untuk direvisi?')"
                             class="px-5 py-2 bg-white text-siakad-primary rounded-lg font-semibold text-sm hover:bg-siakad-light transition whitespace-nowrap">
@@ -95,7 +95,7 @@
                             <p class="text-[10px] text-siakad-secondary mt-1">SKS</p>
                         </div>
                         @if($krs->status == 'draft')
-                        <form action="{{ url('mahasiswa/krs/'.$detail->id) }}" method="POST">
+                        <form action="{{ tenant_url('mahasiswa/krs/'.$detail->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="p-2 text-siakad-secondary hover:text-red-500 hover:bg-red-50 rounded-lg transition">
@@ -158,7 +158,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <form action="{{ url('mahasiswa/krs') }}" method="POST" class="mt-3">
+                                <form action="{{ tenant_url('mahasiswa/krs') }}" method="POST" class="mt-3">
                                     @csrf
                                     <input type="hidden" name="kelas_id" value="{{ $k->id }}">
                                     <button type="submit" class="w-full py-2 px-3 bg-siakad-primary/10 text-siakad-primary rounded-lg font-medium text-sm hover:bg-siakad-primary/20 transition">

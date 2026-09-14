@@ -398,9 +398,24 @@
                 <!-- Navigation -->
                 <nav class="p-3 space-y-1 overflow-y-auto" style="max-height: calc(100vh - 180px);">
 
+                    @if(Auth::user()->isSuperAdmin())
+                    <!-- Central Superadmin Panel -->
+                    <div class="pt-4 pb-1">
+                        <p class="px-3 text-[10px] font-semibold text-siakad-secondary/60 uppercase tracking-widest sidebar-section-title">Panel Pusat</p>
+                    </div>
+                    <a href="{{ url('central') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('central*') ? 'active' : '' }}">
+                        <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"></path></svg>
+                        <span class="sidebar-text">Dashboard Pusat</span>
+                    </a>
+                    <a href="{{ url('central/kampus') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('central/kampus*') ? 'active' : '' }}">
+                        <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        <span class="sidebar-text">Manajemen Kampus</span>
+                    </a>
+                    @endif
+
                     @if(in_array(Auth::user()->role, ['superadmin', 'admin_fakultas']))
                     <!-- Admin Panel -->
-                    <a href="{{ url('admin/dashboard') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/dashboard') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/dashboard') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/dashboard') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         <span class="sidebar-text">Admin Panel</span>
                     </a>
@@ -409,28 +424,28 @@
                         <p class="px-3 text-[10px] font-semibold text-siakad-secondary/60 uppercase tracking-widest sidebar-section-title">Master Data</p>
                     </div>
                     @if(Auth::user()->isSuperAdmin())
-                    <a href="{{ url('admin/fakultas') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/fakultas*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/fakultas') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/fakultas*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                         <span class="sidebar-text">Fakultas</span>
                     </a>
-                    <a href="{{ url('admin/tahun-akademik') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/tahun-akademik*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/tahun-akademik') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/tahun-akademik*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         <span class="sidebar-text">Tahun Akademik</span>
                     </a>
-                    <a href="{{ url('admin/users') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/users*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/users') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/users*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         <span class="sidebar-text">User Management</span>
                     </a>
                     @endif
-                    <a href="{{ url('admin/prodi') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/prodi*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/prodi') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/prodi*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         <span class="sidebar-text">Program Studi</span>
                     </a>
-                    <a href="{{ url('admin/mata-kuliah') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/mata-kuliah*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/mata-kuliah') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/mata-kuliah*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                         <span class="sidebar-text">Mata Kuliah</span>
                     </a>
-                    <a href="{{ url('admin/kelas') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/kelas*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/kelas') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/kelas*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
                         <span class="sidebar-text">Kelas</span>
                     </a>
@@ -438,15 +453,19 @@
                     <div class="pt-4 pb-1">
                         <p class="px-3 text-[10px] font-semibold text-siakad-secondary/60 uppercase tracking-widest sidebar-section-title">Manajemen</p>
                     </div>
-                    <a href="{{ url('admin/mahasiswa') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/mahasiswa*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/mahasiswa') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/mahasiswa*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         <span class="sidebar-text">Mahasiswa</span>
                     </a>
-                    <a href="{{ url('admin/dosen') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/dosen*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/calon-mahasiswa') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/calon-mahasiswa*') ? 'active' : '' }}">
+                        <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span class="sidebar-text">Calon Mahasiswa</span>
+                    </a>
+                    <a href="{{ tenant_url('admin/dosen') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/dosen*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         <span class="sidebar-text">Dosen</span>
                     </a>
-                    <a href="{{ url('admin/ruangan') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/ruangan*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/ruangan') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/ruangan*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                         <span class="sidebar-text">Ruangan</span>
                     </a>
@@ -454,7 +473,7 @@
                     <div class="pt-4 pb-1">
                         <p class="px-3 text-[10px] font-semibold text-siakad-secondary/60 uppercase tracking-widest sidebar-section-title">Akademik</p>
                     </div>
-                    <a href="{{ url('admin/krs-approval') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/krs-approval*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/krs-approval') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/krs-approval*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                         <span class="sidebar-text">Approval KRS</span>
                         @php $pendingCount = \App\Models\Krs::where('status', 'pending')->count(); @endphp
@@ -462,22 +481,22 @@
                         <span class="ml-auto px-2 py-0.5 text-[10px] font-semibold bg-amber-100 text-amber-700 rounded-full">{{ $pendingCount }}</span>
                         @endif
                     </a>
-                    <a href="{{ url('admin/skripsi') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/skripsi*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/skripsi') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/skripsi*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                         <span class="sidebar-text">Skripsi / TA</span>
                     </a>
-                    <a href="{{ url('admin/kp') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/kp*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/kp') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/kp*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                         <span class="sidebar-text">Kerja Praktek</span>
                     </a>
-                    <a href="{{ url('admin/kehadiran-dosen') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('admin/kehadiran-dosen*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('admin/kehadiran-dosen') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/admin/kehadiran-dosen*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <span class="sidebar-text">Kehadiran Dosen</span>
                     </a>
                     @endif
 
                     @if(Auth::user()->role === 'mahasiswa')
-                    <a href="{{ url('mahasiswa/dashboard') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/dashboard') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('mahasiswa/dashboard') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/mahasiswa/dashboard') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         <span class="sidebar-text">Portal Akademik</span>
                     </a>
@@ -485,7 +504,7 @@
                     <div class="pt-4 pb-1">
                         <p class="px-3 text-[10px] font-semibold text-siakad-secondary/60 uppercase tracking-widest sidebar-section-title">Akademik</p>
                     </div>
-                    <a href="{{ url('mahasiswa/krs') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/krs*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('mahasiswa/krs') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/mahasiswa/krs*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                         <span class="sidebar-text">Pengisian KRS</span>
                         @php $krsStatus = \App\Models\Krs::where('mahasiswa_id', Auth::user()->mahasiswa?->id)->latest()->first(); @endphp
@@ -493,27 +512,27 @@
                         <span class="ml-auto px-2 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-700 rounded-full">Baru</span>
                         @endif
                     </a>
-                    <a href="{{ url('mahasiswa/transkrip') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/transkrip*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('mahasiswa/transkrip') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/mahasiswa/transkrip*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                         <span class="sidebar-text">Riwayat Kuliah</span>
                     </a>
-                    <a href="{{ url('mahasiswa/presensi') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/presensi*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('mahasiswa/presensi') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/mahasiswa/presensi*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                         <span class="sidebar-text">Presensi</span>
                     </a>
-                    <a href="{{ url('mahasiswa/jadwal') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/jadwal*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('mahasiswa/jadwal') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/mahasiswa/jadwal*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         <span class="sidebar-text">Jadwal Kuliah</span>
                     </a>
-                    <a href="{{ url('mahasiswa/khs') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/khs*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('mahasiswa/khs') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/mahasiswa/khs*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         <span class="sidebar-text">KHS / Nilai</span>
                     </a>
-                    <a href="{{ url('mahasiswa/skripsi') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/skripsi*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('mahasiswa/skripsi') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/mahasiswa/skripsi*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                         <span class="sidebar-text">Skripsi / TA</span>
                     </a>
-                    <a href="{{ url('mahasiswa/kp') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/kp*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('mahasiswa/kp') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/mahasiswa/kp*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                         <span class="sidebar-text">Kerja Praktek</span>
                     </a>
@@ -521,7 +540,7 @@
                     <div class="pt-4 pb-1">
                         <p class="px-3 text-[10px] font-semibold text-siakad-secondary/60 uppercase tracking-widest sidebar-section-title">AI Assistant</p>
                     </div>
-                    <a href="{{ url('mahasiswa/ai-advisor') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/ai-advisor*') ? 'active' : '' }} bg-gradient-to-r from-purple-500/10 to-indigo-500/10 hover:from-purple-500/20 hover:to-indigo-500/20">
+                    <a href="{{ tenant_url('mahasiswa/ai-advisor') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/mahasiswa/ai-advisor*') ? 'active' : '' }} bg-gradient-to-r from-purple-500/10 to-indigo-500/10 hover:from-purple-500/20 hover:to-indigo-500/20">
                         <svg class="w-[18px] h-[18px] flex-shrink-0 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
                         <span class="sidebar-text">AI Advisor</span>
                     </a>
@@ -529,7 +548,7 @@
                     <div class="pt-4 pb-1">
                         <p class="px-3 text-[10px] font-semibold text-siakad-secondary/60 uppercase tracking-widest sidebar-section-title">E-Learning</p>
                     </div>
-                    <a href="{{ url('mahasiswa/lms') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/lms*') || request()->is('mahasiswa/materi*') || request()->is('mahasiswa/tugas*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('mahasiswa/lms') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/mahasiswa/lms*') || request()->is('*/mahasiswa/materi*') || request()->is('*/mahasiswa/tugas*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                         <span class="sidebar-text">Materi & Tugas</span>
                     </a>
@@ -537,14 +556,14 @@
                     <div class="pt-4 pb-1">
                         <p class="px-3 text-[10px] font-semibold text-siakad-secondary/60 uppercase tracking-widest sidebar-section-title">Data</p>
                     </div>
-                    <a href="{{ route('mahasiswa.biodata.index') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('mahasiswa/biodata*') ? 'active' : '' }}">
+                    <a href="{{ route('mahasiswa.biodata.index') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/mahasiswa/biodata*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         <span class="sidebar-text">Biodata</span>
                     </a>
                     @endif
 
                     @if(Auth::user()->role === 'dosen')
-                    <a href="{{ url('dosen/dashboard') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('dosen/dashboard') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('dosen/dashboard') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/dosen/dashboard') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         <span class="sidebar-text">Dashboard</span>
                     </a>
@@ -552,11 +571,11 @@
                     <div class="pt-4 pb-1">
                         <p class="px-3 text-[10px] font-semibold text-siakad-secondary/60 uppercase tracking-widest sidebar-section-title">Bimbingan</p>
                     </div>
-                    <a href="{{ url('dosen/bimbingan') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('dosen/bimbingan') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('dosen/bimbingan') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/dosen/bimbingan') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         <span class="sidebar-text">Mahasiswa Bimbingan</span>
                     </a>
-                    <a href="{{ url('dosen/bimbingan/krs-approval') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('dosen/bimbingan/krs*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('dosen/bimbingan/krs-approval') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/dosen/bimbingan/krs*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                         <span class="sidebar-text">Approval KRS</span>
                         @php 
@@ -571,23 +590,23 @@
                     <div class="pt-4 pb-1">
                         <p class="px-3 text-[10px] font-semibold text-siakad-secondary/60 uppercase tracking-widest sidebar-section-title">Pengajaran</p>
                     </div>
-                    <a href="{{ url('dosen/penilaian') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('dosen/penilaian*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('dosen/penilaian') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/dosen/penilaian*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                         <span class="sidebar-text">Input Nilai</span>
                     </a>
-                    <a href="{{ url('dosen/presensi') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('dosen/presensi*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('dosen/presensi') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/dosen/presensi*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                         <span class="sidebar-text">Presensi</span>
                     </a>
-                    <a href="{{ url('dosen/skripsi') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('dosen/skripsi*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('dosen/skripsi') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/dosen/skripsi*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                         <span class="sidebar-text">Bimbingan Skripsi</span>
                     </a>
-                    <a href="{{ url('dosen/kp') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('dosen/kp*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('dosen/kp') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/dosen/kp*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                         <span class="sidebar-text">Bimbingan KP</span>
                     </a>
-                    <a href="{{ url('dosen/kehadiran') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('dosen/kehadiran*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('dosen/kehadiran') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/dosen/kehadiran*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <span class="sidebar-text">Kehadiran Saya</span>
                     </a>
@@ -595,7 +614,7 @@
                     <div class="pt-4 pb-1">
                         <p class="px-3 text-[10px] font-semibold text-siakad-secondary/60 uppercase tracking-widest sidebar-section-title">E-Learning</p>
                     </div>
-                    <a href="{{ url('dosen/lms') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('dosen/lms*') || request()->is('dosen/materi*') || request()->is('dosen/tugas*') ? 'active' : '' }}">
+                    <a href="{{ tenant_url('dosen/lms') }}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-siakad-secondary text-sm font-medium {{ request()->is('*/dosen/lms*') || request()->is('*/dosen/materi*') || request()->is('*/dosen/tugas*') ? 'active' : '' }}">
                         <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                         <span class="sidebar-text">Materi & Tugas</span>
                     </a>
@@ -729,24 +748,24 @@
         @if(Auth::user()->role === 'mahasiswa')
         <!-- Bottom Navigation (Mobile Only) -->
         <nav class="fixed bottom-0 z-50 w-full bg-white border-t border-gray-200 dark:bg-gray-800 dark:border-gray-700 md:hidden flex justify-around items-center h-16 pb-safe safe-area-bottom">
-            <a href="{{ url('mahasiswa/dashboard') }}" class="flex flex-col items-center justify-center w-full h-full text-[10px] font-medium {{ request()->is('mahasiswa/dashboard') ? 'text-siakad-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400' }}">
+            <a href="{{ tenant_url('mahasiswa/dashboard') }}" class="flex flex-col items-center justify-center w-full h-full text-[10px] font-medium {{ request()->is('*/mahasiswa/dashboard') ? 'text-siakad-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400' }}">
                 <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 <span>Beranda</span>
             </a>
             
-            <a href="{{ url('mahasiswa/jadwal') }}" class="flex flex-col items-center justify-center w-full h-full text-[10px] font-medium {{ request()->is('mahasiswa/jadwal*') ? 'text-siakad-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400' }}">
+            <a href="{{ tenant_url('mahasiswa/jadwal') }}" class="flex flex-col items-center justify-center w-full h-full text-[10px] font-medium {{ request()->is('*/mahasiswa/jadwal*') ? 'text-siakad-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400' }}">
                 <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 <span>Jadwal</span>
             </a>
 
-            <a href="{{ url('mahasiswa/presensi') }}" class="flex flex-col items-center justify-center w-full h-full text-[10px] font-medium {{ request()->is('mahasiswa/presensi*') ? 'text-siakad-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400' }}">
+            <a href="{{ tenant_url('mahasiswa/presensi') }}" class="flex flex-col items-center justify-center w-full h-full text-[10px] font-medium {{ request()->is('*/mahasiswa/presensi*') ? 'text-siakad-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400' }}">
                 <div class="w-12 h-12 bg-siakad-primary rounded-full flex items-center justify-center -mt-6 border-4 border-white dark:border-gray-900 shadow-lg">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4h2v-4zM6 16H4v4h2v-4zM6 9H4v5h2V9zm6 0h-2v5h2V9zm6 0h-2v5h2V9z"></path></svg>
                 </div>
                 <span class="mt-1">Presensi</span>
             </a>
 
-        <a href="{{ url('mahasiswa/khs') }}" class="flex flex-col items-center justify-center w-full h-full text-[10px] font-medium {{ request()->is('mahasiswa/khs*') ? 'text-siakad-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400' }}">
+        <a href="{{ tenant_url('mahasiswa/khs') }}" class="flex flex-col items-center justify-center w-full h-full text-[10px] font-medium {{ request()->is('*/mahasiswa/khs*') ? 'text-siakad-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400' }}">
                 <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 <span>Nilai</span>
             </a>
@@ -778,14 +797,14 @@
                             </div>
                             <div class="relative flex-1 px-4 sm:px-6">
                                 <div class="grid grid-cols-3 gap-4">
-                                    <a href="{{ url('mahasiswa/krs') }}" class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                                    <a href="{{ tenant_url('mahasiswa/krs') }}" class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
                                         <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mb-2">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                                         </div>
                                         <span class="text-xs text-center font-medium text-gray-700 dark:text-gray-300">Pengisian KRS</span>
                                     </a>
                                     
-                                    <a href="{{ url('mahasiswa/transkrip') }}" class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                                    <a href="{{ tenant_url('mahasiswa/transkrip') }}" class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
                                         <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-2">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                                         </div>

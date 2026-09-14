@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Notification extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $fillable = [
+        'kampus_id',
         'user_id',
         'type',
         'title',
@@ -25,9 +27,13 @@ class Notification extends Model
 
     // Notification Types
     const TYPE_JADWAL_CHANGE = 'jadwal_change';
+
     const TYPE_KRS_APPROVED = 'krs_approved';
+
     const TYPE_KRS_REJECTED = 'krs_rejected';
+
     const TYPE_NILAI_UPDATED = 'nilai_updated';
+
     const TYPE_PRESENSI_WARNING = 'presensi_warning';
 
     /**
@@ -59,7 +65,7 @@ class Notification extends Model
      */
     public function isRead(): bool
     {
-        return !is_null($this->read_at);
+        return ! is_null($this->read_at);
     }
 
     /**
@@ -67,7 +73,7 @@ class Notification extends Model
      */
     public function markAsRead(): void
     {
-        if (!$this->isRead()) {
+        if (! $this->isRead()) {
             $this->update(['read_at' => now()]);
         }
     }
@@ -77,7 +83,7 @@ class Notification extends Model
      */
     public function getIconAttribute(): string
     {
-        return match($this->type) {
+        return match ($this->type) {
             self::TYPE_JADWAL_CHANGE => '📅',
             self::TYPE_KRS_APPROVED => '✅',
             self::TYPE_KRS_REJECTED => '❌',
@@ -92,7 +98,7 @@ class Notification extends Model
      */
     public function getColorAttribute(): string
     {
-        return match($this->type) {
+        return match ($this->type) {
             self::TYPE_JADWAL_CHANGE => 'blue',
             self::TYPE_KRS_APPROVED => 'emerald',
             self::TYPE_KRS_REJECTED => 'red',

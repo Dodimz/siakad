@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class KerjaPraktek extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'kerja_praktek';
 
     protected $fillable = [
+        'kampus_id',
         'mahasiswa_id',
         'pembimbing_id',
         'nama_perusahaan',
@@ -44,13 +46,21 @@ class KerjaPraktek extends Model
     ];
 
     const STATUS_PENGAJUAN = 'pengajuan';
+
     const STATUS_DISETUJUI = 'disetujui';
+
     const STATUS_DITOLAK = 'ditolak';
+
     const STATUS_BERLANGSUNG = 'berlangsung';
+
     const STATUS_SELESAI_KP = 'selesai_kp';
+
     const STATUS_PENYUSUNAN = 'penyusunan_laporan';
+
     const STATUS_SEMINAR = 'seminar';
+
     const STATUS_REVISI = 'revisi';
+
     const STATUS_SELESAI = 'selesai';
 
     public static function getStatusList(): array
@@ -75,7 +85,7 @@ class KerjaPraktek extends Model
 
     public function getStatusColorAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             self::STATUS_PENGAJUAN => 'amber',
             self::STATUS_DISETUJUI, self::STATUS_BERLANGSUNG => 'blue',
             self::STATUS_DITOLAK => 'red',
@@ -100,13 +110,17 @@ class KerjaPraktek extends Model
             self::STATUS_REVISI => 95,
             self::STATUS_SELESAI => 100,
         ];
+
         return $map[$this->status] ?? 0;
     }
 
     public function getDurasiAttribute(): string
     {
-        if (!$this->tanggal_mulai || !$this->tanggal_selesai) return '-';
-        return $this->tanggal_mulai->diffInWeeks($this->tanggal_selesai) . ' minggu';
+        if (! $this->tanggal_mulai || ! $this->tanggal_selesai) {
+            return '-';
+        }
+
+        return $this->tanggal_mulai->diffInWeeks($this->tanggal_selesai).' minggu';
     }
 
     public function mahasiswa()

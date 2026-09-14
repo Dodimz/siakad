@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,15 +10,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pertemuan extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'pertemuan';
 
     const STATUS_TERLAKSANA = 'terlaksana';
+
     const STATUS_LIBUR = 'libur';
+
     const STATUS_PENGGANTI = 'pengganti';
 
     protected $fillable = [
+        'kampus_id',
         'jadwal_kuliah_id',
         'pertemuan_ke',
         'tanggal',
@@ -52,7 +56,7 @@ class Pertemuan extends Model
      */
     public function scopeByKelas($query, $kelasId)
     {
-        return $query->whereHas('jadwalKuliah', fn($q) => $q->where('kelas_id', $kelasId));
+        return $query->whereHas('jadwalKuliah', fn ($q) => $q->where('kelas_id', $kelasId));
     }
 
     /**
@@ -62,7 +66,7 @@ class Pertemuan extends Model
     {
         return Mahasiswa::whereHas('krs', function ($q) {
             $q->where('status', 'approved')
-              ->whereHas('krsDetail', fn($q2) => $q2->where('kelas_id', $this->jadwalKuliah->kelas_id));
+                ->whereHas('krsDetail', fn ($q2) => $q2->where('kelas_id', $this->jadwalKuliah->kelas_id));
         })->with('user')->get();
     }
 

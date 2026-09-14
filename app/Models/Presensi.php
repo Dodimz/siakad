@@ -2,22 +2,27 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Presensi extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'presensi';
 
     const STATUS_HADIR = 'hadir';
+
     const STATUS_SAKIT = 'sakit';
+
     const STATUS_IZIN = 'izin';
+
     const STATUS_ALPA = 'alpa';
 
     protected $fillable = [
+        'kampus_id',
         'pertemuan_id',
         'mahasiswa_id',
         'status',
@@ -60,7 +65,7 @@ class Presensi extends Model
      */
     public function getStatusColor(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             self::STATUS_HADIR => 'emerald',
             self::STATUS_SAKIT => 'amber',
             self::STATUS_IZIN => 'blue',
@@ -74,7 +79,7 @@ class Presensi extends Model
      */
     public function getStatusLabel(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             self::STATUS_HADIR => 'Hadir',
             self::STATUS_SAKIT => 'Sakit',
             self::STATUS_IZIN => 'Izin',

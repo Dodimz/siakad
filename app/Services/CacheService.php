@@ -2,16 +2,17 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Cache;
-use App\Models\Fakultas;
-use App\Models\Prodi;
-use App\Models\MataKuliah;
 use App\Models\Dosen;
+use App\Models\Fakultas;
+use App\Models\Mahasiswa;
+use App\Models\MataKuliah;
+use App\Models\Prodi;
 use App\Models\TahunAkademik;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Centralized Cache Service for SIAKAD
- * 
+ *
  * Provides unified caching for frequently accessed data with automatic
  * invalidation and cache warming capabilities.
  */
@@ -19,12 +20,16 @@ class CacheService
 {
     // Cache TTL constants (in seconds)
     public const TTL_SHORT = 300;      // 5 minutes - for volatile data
+
     public const TTL_MEDIUM = 3600;    // 1 hour - for master data
+
     public const TTL_LONG = 86400;     // 24 hours - for rarely changing data
 
     // Cache key prefixes
     private const PREFIX_MASTER = 'master';
+
     private const PREFIX_USER = 'user';
+
     private const PREFIX_STATS = 'stats';
 
     /**
@@ -39,9 +44,9 @@ class CacheService
     public function getActiveTahunAkademik(): ?TahunAkademik
     {
         return Cache::remember(
-            self::PREFIX_MASTER . '.tahun_aktif',
+            tenant_cache_key(self::PREFIX_MASTER.'.tahun_aktif'),
             self::TTL_MEDIUM,
-            fn() => TahunAkademik::where('is_active', true)->first()
+            fn () => TahunAkademik::where('is_active', true)->first()
         );
     }
 
@@ -51,9 +56,9 @@ class CacheService
     public function getFakultasList()
     {
         return Cache::remember(
-            self::PREFIX_MASTER . '.fakultas',
+            tenant_cache_key(self::PREFIX_MASTER.'.fakultas'),
             self::TTL_MEDIUM,
-            fn() => Fakultas::orderBy('nama')->get()
+            fn () => Fakultas::orderBy('nama')->get()
         );
     }
 
@@ -63,9 +68,9 @@ class CacheService
     public function getProdiList()
     {
         return Cache::remember(
-            self::PREFIX_MASTER . '.prodi',
+            tenant_cache_key(self::PREFIX_MASTER.'.prodi'),
             self::TTL_MEDIUM,
-            fn() => Prodi::with('fakultas')->orderBy('nama')->get()
+            fn () => Prodi::with('fakultas')->orderBy('nama')->get()
         );
     }
 
@@ -75,9 +80,9 @@ class CacheService
     public function getProdiByFakultas(int $fakultasId)
     {
         return Cache::remember(
-            self::PREFIX_MASTER . ".prodi.fakultas.{$fakultasId}",
+            tenant_cache_key(self::PREFIX_MASTER.".prodi.fakultas.{$fakultasId}"),
             self::TTL_MEDIUM,
-            fn() => Prodi::where('fakultas_id', $fakultasId)->orderBy('nama')->get()
+            fn () => Prodi::where('fakultas_id', $fakultasId)->orderBy('nama')->get()
         );
     }
 
@@ -87,9 +92,9 @@ class CacheService
     public function getMataKuliahList()
     {
         return Cache::remember(
-            self::PREFIX_MASTER . '.mata_kuliah',
+            tenant_cache_key(self::PREFIX_MASTER.'.mata_kuliah'),
             self::TTL_MEDIUM,
-            fn() => MataKuliah::with('prodi')->orderBy('kode_mk')->get()
+            fn () => MataKuliah::with('prodi')->orderBy('kode_mk')->get()
         );
     }
 
@@ -99,9 +104,9 @@ class CacheService
     public function getDosenList()
     {
         return Cache::remember(
-            self::PREFIX_MASTER . '.dosen',
+            tenant_cache_key(self::PREFIX_MASTER.'.dosen'),
             self::TTL_MEDIUM,
-            fn() => Dosen::with(['user', 'prodi'])->get()
+            fn () => Dosen::with(['user', 'prodi'])->get()
         );
     }
 
@@ -111,10 +116,10 @@ class CacheService
     public function getDosenByFakultas(int $fakultasId)
     {
         return Cache::remember(
-            self::PREFIX_MASTER . ".dosen.fakultas.{$fakultasId}",
+            tenant_cache_key(self::PREFIX_MASTER.".dosen.fakultas.{$fakultasId}"),
             self::TTL_MEDIUM,
-            fn() => Dosen::with('user')
-                ->whereHas('prodi', fn($q) => $q->where('fakultas_id', $fakultasId))
+            fn () => Dosen::with('user')
+                ->whereHas('prodi', fn ($q) => $q->where('fakultas_id', $fakultasId))
                 ->get()
         );
     }
@@ -130,7 +135,7 @@ class CacheService
      */
     public function clearTahunAkademikCache(): void
     {
-        Cache::forget(self::PREFIX_MASTER . '.tahun_aktif');
+        Cache::forget(tenant_cache_key(self::PREFIX_MASTER.'.tahun_aktif'));
     }
 
     /**
@@ -138,7 +143,7 @@ class CacheService
      */
     public function clearFakultasCache(): void
     {
-        Cache::forget(self::PREFIX_MASTER . '.fakultas');
+        Cache::forget(tenant_cache_key(self::PREFIX_MASTER.'.fakultas'));
     }
 
     /**
@@ -146,10 +151,10 @@ class CacheService
      */
     public function clearProdiCache(?int $fakultasId = null): void
     {
-        Cache::forget(self::PREFIX_MASTER . '.prodi');
-        
+        Cache::forget(tenant_cache_key(self::PREFIX_MASTER.'.prodi'));
+
         if ($fakultasId) {
-            Cache::forget(self::PREFIX_MASTER . ".prodi.fakultas.{$fakultasId}");
+            Cache::forget(tenant_cache_key(self::PREFIX_MASTER.".prodi.fakultas.{$fakultasId}"));
         }
     }
 
@@ -158,7 +163,7 @@ class CacheService
      */
     public function clearMataKuliahCache(): void
     {
-        Cache::forget(self::PREFIX_MASTER . '.mata_kuliah');
+        Cache::forget(tenant_cache_key(self::PREFIX_MASTER.'.mata_kuliah'));
     }
 
     /**
@@ -166,10 +171,10 @@ class CacheService
      */
     public function clearDosenCache(?int $fakultasId = null): void
     {
-        Cache::forget(self::PREFIX_MASTER . '.dosen');
-        
+        Cache::forget(tenant_cache_key(self::PREFIX_MASTER.'.dosen'));
+
         if ($fakultasId) {
-            Cache::forget(self::PREFIX_MASTER . ".dosen.fakultas.{$fakultasId}");
+            Cache::forget(tenant_cache_key(self::PREFIX_MASTER.".dosen.fakultas.{$fakultasId}"));
         }
     }
 
@@ -229,9 +234,9 @@ class CacheService
     public function getMahasiswaByUserId(int $userId)
     {
         return Cache::remember(
-            self::PREFIX_USER . ".mahasiswa.{$userId}",
+            tenant_cache_key(self::PREFIX_USER.".mahasiswa.{$userId}"),
             self::TTL_SHORT,
-            fn() => \App\Models\Mahasiswa::where('user_id', $userId)->with('prodi')->first()
+            fn () => Mahasiswa::where('user_id', $userId)->with('prodi')->first()
         );
     }
 
@@ -241,9 +246,9 @@ class CacheService
     public function getDosenByUserId(int $userId)
     {
         return Cache::remember(
-            self::PREFIX_USER . ".dosen.{$userId}",
+            tenant_cache_key(self::PREFIX_USER.".dosen.{$userId}"),
             self::TTL_SHORT,
-            fn() => \App\Models\Dosen::where('user_id', $userId)->with('prodi')->first()
+            fn () => Dosen::where('user_id', $userId)->with('prodi')->first()
         );
     }
 
@@ -252,8 +257,8 @@ class CacheService
      */
     public function clearUserCache(int $userId): void
     {
-        Cache::forget(self::PREFIX_USER . ".mahasiswa.{$userId}");
-        Cache::forget(self::PREFIX_USER . ".dosen.{$userId}");
+        Cache::forget(tenant_cache_key(self::PREFIX_USER.".mahasiswa.{$userId}"));
+        Cache::forget(tenant_cache_key(self::PREFIX_USER.".dosen.{$userId}"));
     }
 
     /**
@@ -267,18 +272,18 @@ class CacheService
      */
     public function getDashboardStats(?int $fakultasId = null): array
     {
-        $key = $fakultasId 
-            ? self::PREFIX_STATS . ".dashboard.fakultas.{$fakultasId}"
-            : self::PREFIX_STATS . '.dashboard.global';
+        $key = $fakultasId
+            ? tenant_cache_key(self::PREFIX_STATS.".dashboard.fakultas.{$fakultasId}")
+            : tenant_cache_key(self::PREFIX_STATS.'.dashboard.global');
 
         return Cache::remember($key, self::TTL_SHORT, function () use ($fakultasId) {
-            $mahasiswaQuery = \App\Models\Mahasiswa::query();
-            $dosenQuery = \App\Models\Dosen::query();
-            $prodiQuery = \App\Models\Prodi::query();
+            $mahasiswaQuery = Mahasiswa::query();
+            $dosenQuery = Dosen::query();
+            $prodiQuery = Prodi::query();
 
             if ($fakultasId) {
-                $mahasiswaQuery->whereHas('prodi', fn($q) => $q->where('fakultas_id', $fakultasId));
-                $dosenQuery->whereHas('prodi', fn($q) => $q->where('fakultas_id', $fakultasId));
+                $mahasiswaQuery->whereHas('prodi', fn ($q) => $q->where('fakultas_id', $fakultasId));
+                $dosenQuery->whereHas('prodi', fn ($q) => $q->where('fakultas_id', $fakultasId));
                 $prodiQuery->where('fakultas_id', $fakultasId);
             }
 
@@ -286,7 +291,7 @@ class CacheService
                 'total_mahasiswa' => $mahasiswaQuery->count(),
                 'total_dosen' => $dosenQuery->count(),
                 'total_prodi' => $prodiQuery->count(),
-                'total_mata_kuliah' => \App\Models\MataKuliah::count(),
+                'total_mata_kuliah' => MataKuliah::count(),
             ];
         });
     }
@@ -297,8 +302,8 @@ class CacheService
     public function clearDashboardStats(?int $fakultasId = null): void
     {
         if ($fakultasId) {
-            Cache::forget(self::PREFIX_STATS . ".dashboard.fakultas.{$fakultasId}");
+            Cache::forget(tenant_cache_key(self::PREFIX_STATS.".dashboard.fakultas.{$fakultasId}"));
         }
-        Cache::forget(self::PREFIX_STATS . '.dashboard.global');
+        Cache::forget(tenant_cache_key(self::PREFIX_STATS.'.dashboard.global'));
     }
 }

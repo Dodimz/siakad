@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Ruangan extends Model
 {
-    use HasFactory;
+    use BelongsToTenant, HasFactory;
 
     protected $table = 'ruangan';
 
     protected $fillable = [
+        'kampus_id',
         'kode_ruangan',
         'nama_ruangan',
         'kapasitas',
@@ -49,4 +51,3 @@ class Ruangan extends Model
         return $query->where('is_active', true);
     }
 }
-
