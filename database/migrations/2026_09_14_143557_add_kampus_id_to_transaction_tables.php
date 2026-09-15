@@ -36,8 +36,7 @@ return new class extends Migration
                 $table->foreignId('kampus_id')
                     ->nullable()
                     ->constrained('kampus')
-                    ->cascadeOnDelete()
-                    ->index();
+                    ->cascadeOnDelete();
             });
         }
     }
