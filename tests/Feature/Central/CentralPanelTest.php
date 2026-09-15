@@ -37,6 +37,24 @@ test('superadmin can view central dashboard', function () {
     $response->assertViewHas('perKampus');
 });
 
+test('dashboard shows aggregated counts across all kampus', function () {
+    $response = $this->actingAs($this->superadmin)->get('/central');
+
+    $response->assertOk();
+    $response->assertViewHas('stats', function (array $stats) {
+        return isset($stats['calon_total'], $stats['calon_pending'], $stats['pmb_ready']);
+    });
+});
+
+test('perkampus breakdown includes calon count', function () {
+    $response = $this->actingAs($this->superadmin)->get('/central');
+
+    $response->assertOk();
+    $response->assertViewHas('perKampus', function ($perKampus) {
+        return $perKampus->isEmpty() || array_key_exists('calon_mahasiswa_count', $perKampus->first()->getAttributes());
+    });
+});
+
 test('superadmin can view kampus list', function () {
     Kampus::factory()->count(2)->create();
 

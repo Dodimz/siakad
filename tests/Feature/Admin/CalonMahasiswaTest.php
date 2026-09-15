@@ -142,6 +142,22 @@ test('admin dapat menolak calon', function () {
         ->and(User::count())->toBe(1);
 });
 
+test('superadmin dapat mengakses kampus lain tanpa mencocokkan kampus_id', function () {
+    $kampusUtama = Kampus::where('slug', 'kampus-utama')->first();
+    $kampusLain = Kampus::factory()->create(['kode' => 'LN', 'slug' => 'lain']);
+    $prodi = Prodi::factory()->create(['kampus_id' => $kampusLain->id]);
+    $calon = createCalon([], $kampusLain);
+
+    $superadmin = User::factory()->create([
+        'role' => 'superadmin',
+        'kampus_id' => $kampusUtama->id,
+    ]);
+
+    $this->actingAs($superadmin)
+        ->post("/lain/admin/calon-mahasiswa/{$calon->id}/terima", ['prodi_id' => $prodi->id])
+        ->assertRedirect();
+});
+
 test('calon dari kampus lain tidak ditemukan untuk kampus aktif', function () {
     $kampusLain = Kampus::factory()->create();
     $calon = createCalon([], $kampusLain);

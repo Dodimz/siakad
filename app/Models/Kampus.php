@@ -119,4 +119,9 @@ class Kampus extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function calonMahasiswa()
+    {
+        return $this->hasMany(CalonMahasiswa::class);
+    }
 }

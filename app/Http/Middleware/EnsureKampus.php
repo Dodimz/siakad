@@ -40,7 +40,12 @@ class EnsureKampus
 
         $user = $request->user();
 
-        if ($user && $user->kampus_id && $user->kampus_id !== $kampus->id) {
+        $userInKampus = $user
+            && ! $user->isSuperAdmin()
+            && $user->kampus_id
+            && $user->kampus_id !== $kampus->id;
+
+        if ($userInKampus) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Anda tidak terdaftar di kampus ini.'], 403);
             }

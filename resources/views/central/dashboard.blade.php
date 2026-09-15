@@ -15,7 +15,7 @@
     </div>
 
     <!-- Stat Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-4 mb-8">
         <div class="card-saas p-5 dark:bg-gray-800">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-siakad-primary/10 dark:bg-blue-500/20 rounded-xl flex items-center justify-center">
@@ -82,8 +82,33 @@
                     <svg class="w-5 h-5 text-siakad-dark dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 </div>
                 <div>
-                    <p class="text-2xl font-bold text-siakad-dark dark:text-white">{{ $stats['dosen'] }}</p>
+                    <p class="text-2xl font-bold text-siakad-dark dark:text-white">{{ $stats['users'] }}</p>
+                    <p class="text-xs text-siakad-secondary dark:text-gray-400">Total Users</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-saas p-5 dark:bg-gray-800">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-violet-100 dark:bg-violet-500/20 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-violet-600 dark:text-violet-400">{{ $stats['dosen'] }}</p>
                     <p class="text-xs text-siakad-secondary dark:text-gray-400">Dosen</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-saas p-5 dark:bg-gray-800">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-cyan-100 dark:bg-cyan-500/20 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-cyan-600 dark:text-cyan-400">{{ $stats['calon_total'] }}</p>
+                    <p class="text-xs text-siakad-secondary dark:text-gray-400">Calon PMB</p>
+                    <p class="text-[10px] text-amber-600 dark:text-amber-400">{{ $stats['calon_pending'] }} pending</p>
                 </div>
             </div>
         </div>
@@ -104,6 +129,8 @@
                         <th class="py-3 px-2 font-semibold text-center">Mahasiswa</th>
                         <th class="py-3 px-2 font-semibold text-center">Dosen</th>
                         <th class="py-3 px-2 font-semibold text-center">Users</th>
+                        <th class="py-3 px-2 font-semibold text-center">Calon PMB</th>
+                        <th class="py-3 px-2 font-semibold text-center">PMB Token</th>
                         <th class="py-3 px-2 font-semibold text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -124,6 +151,14 @@
                         <td class="py-3 px-2 text-center text-siakad-dark dark:text-white">{{ $kampus->mahasiswa_count }}</td>
                         <td class="py-3 px-2 text-center text-siakad-dark dark:text-white">{{ $kampus->dosen_count }}</td>
                         <td class="py-3 px-2 text-center text-siakad-dark dark:text-white">{{ $kampus->users_count }}</td>
+                        <td class="py-3 px-2 text-center text-siakad-dark dark:text-white">{{ $kampus->calon_mahasiswa_count }}</td>
+                        <td class="py-3 px-2 text-center">
+                            @if($kampus->pmb_token)
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">Aktif</span>
+                            @else
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-500 dark:bg-gray-700/50 dark:text-gray-400">Belum</span>
+                            @endif
+                        </td>
                         <td class="py-3 px-2 text-center">
                             <a href="{{ route('central.kampus.edit', $kampus) }}" class="inline-flex items-center gap-1 text-siakad-primary dark:text-blue-400 hover:underline text-xs font-medium">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
@@ -133,7 +168,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="py-8 text-center text-siakad-secondary dark:text-gray-500 text-sm">
+                        <td colspan="10" class="py-8 text-center text-siakad-secondary dark:text-gray-500 text-sm">
                             Belum ada kampus terdaftar.
                         </td>
                     </tr>
