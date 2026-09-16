@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kampus;
+use App\Models\PmbImportLog;
 use App\Services\PmbImportService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -46,6 +47,14 @@ class PmbController extends Controller
         $calon = $this->importer->importCalon($validated, $kampus);
 
         $isDuplicate = ! $calon->wasRecentlyCreated;
+
+        PmbImportLog::create([
+            'kampus_id' => $kampus->id,
+            'no_pendaftar' => $calon->no_pendaftar,
+            'nama' => $calon->nama,
+            'aksi' => $isDuplicate ? PmbImportLog::AKSI_DUPLICATE : PmbImportLog::AKSI_CREATED,
+            'ip_address' => $request->ip(),
+        ]);
 
         return response()->json([
             'status' => $isDuplicate ? 'duplicate' : 'success',

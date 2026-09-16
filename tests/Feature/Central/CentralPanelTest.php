@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\CalonMahasiswa;
 use App\Models\Kampus;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -38,11 +39,28 @@ test('superadmin can view central dashboard', function () {
 });
 
 test('dashboard shows aggregated counts across all kampus', function () {
+    $kampusLain = Kampus::factory()->create(['slug' => 'kampus-lain']);
+    CalonMahasiswa::create([
+        'kampus_id' => Kampus::first()->id,
+        'no_pendaftar' => 'PMB-A-1',
+        'nama' => 'A',
+        'tahun_masuk' => '2026',
+    ]);
+    CalonMahasiswa::create([
+        'kampus_id' => $kampusLain->id,
+        'no_pendaftar' => 'PMB-B-1',
+        'nama' => 'B',
+        'tahun_masuk' => '2026',
+        'status' => CalonMahasiswa::STATUS_IMPORTED,
+    ]);
+
     $response = $this->actingAs($this->superadmin)->get('/central');
 
     $response->assertOk();
     $response->assertViewHas('stats', function (array $stats) {
-        return isset($stats['calon_total'], $stats['calon_pending'], $stats['pmb_ready']);
+        return $stats['calon_total'] === 2
+            && $stats['calon_imported'] === 1
+            && isset($stats['calon_pending'], $stats['pmb_ready']);
     });
 });
 

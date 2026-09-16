@@ -36,6 +36,13 @@ test('token yang valid dapat mengirim calon mahasiswa', function () {
         'tahun_masuk' => '2026',
         'status' => 'pending',
     ]);
+
+    $this->assertDatabaseHas('pmb_import_logs', [
+        'kampus_id' => $kampus->id,
+        'no_pendaftar' => 'PMB-2026-001',
+        'nama' => 'Budi Santoso',
+        'aksi' => 'created',
+    ]);
 });
 
 test('request tanpa token ditolak', function () {
@@ -64,6 +71,17 @@ test('no pendaftar yang sama per kampus menghasilkan duplicate, bukan baris baru
         ->assertJson(['status' => 'duplicate']);
 
     expect(CalonMahasiswa::count())->toBe(1);
+
+    $this->assertDatabaseHas('pmb_import_logs', [
+        'kampus_id' => $kampus->id,
+        'no_pendaftar' => 'PMB-2026-001',
+        'aksi' => 'created',
+    ]);
+    $this->assertDatabaseHas('pmb_import_logs', [
+        'kampus_id' => $kampus->id,
+        'no_pendaftar' => 'PMB-2026-001',
+        'aksi' => 'duplicate',
+    ]);
 });
 
 test('no pendaftar sama di kampus berbeda diperbolehkan', function () {
