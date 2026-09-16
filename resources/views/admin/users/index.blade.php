@@ -60,7 +60,7 @@
                             @endphp
                             <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full {{ $roleColors[$user->role] ?? 'bg-gray-100 text-gray-800' }}">{{ ucfirst(str_replace('_', ' ', $user->role)) }}</span>
                         </td>
-                        <td class="py-4 px-5 text-sm text-siakad-secondary">{{ $user->fakultas?->nama ?? ($user->mahasiswa?->prodi?->fakultas?->nama ?? ($user->dosen?->prodi?->fakultas?->nama ?? '-')) }}</td>
+                        <td class="py-4 px-5 text-sm text-siakad-secondary">{{ $user->fakultas?->nama ?? ($user->mahasiswa?->prodi?->fakultas?->nama ?? ($user->dosen?->prodi?->fakultas?->nama ?? ($user->role === 'admin_kampus' ? $user->kampus?->nama : '-'))) }}</td>
                         <td class="py-4 px-5 text-right">
                             <div class="flex items-center justify-end gap-1">
                                 <button onclick="openEditModal({{ json_encode($user) }})" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg" title="Edit"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></button>
@@ -96,6 +96,11 @@
                             <option value="superadmin">Superadmin</option><option value="admin_kampus">Admin Kampus</option><option value="admin_fakultas">Admin Fakultas</option><option value="dosen">Dosen</option><option value="mahasiswa">Mahasiswa</option>
                         </select>
                     </div>
+                    <div id="createKampusField" class="hidden"><label class="block text-sm font-medium text-siakad-secondary mb-1">Admin Kampus Untuk</label>
+                        <select name="kampus_id" class="input-saas w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            @foreach($kampusList as $k)<option value="{{ $k->id }}" {{ $k->id == $currentKampusId ? 'selected' : '' }}>{{ $k->nama }}</option>@endforeach
+                        </select>
+                    </div>
                     <div id="createFakultasField" class="hidden"><label class="block text-sm font-medium text-siakad-secondary mb-1">Fakultas</label>
                         <select name="fakultas_id" class="input-saas w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"><option value="">-- Pilih --</option>@foreach($fakultasList as $f)<option value="{{ $f->id }}">{{ $f->nama }}</option>@endforeach</select>
                     </div>
@@ -120,6 +125,11 @@
                             <option value="superadmin">Superadmin</option><option value="admin_kampus">Admin Kampus</option><option value="admin_fakultas">Admin Fakultas</option><option value="dosen">Dosen</option><option value="mahasiswa">Mahasiswa</option>
                         </select>
                     </div>
+                    <div id="editKampusField" class="hidden"><label class="block text-sm font-medium text-siakad-secondary mb-1">Admin Kampus Untuk</label>
+                        <select name="kampus_id" id="editKampusId" class="input-saas w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <option value="">-- Pilih --</option>@foreach($kampusList as $k)<option value="{{ $k->id }}">{{ $k->nama }}</option>@endforeach
+                        </select>
+                    </div>
                     <div id="editFakultasField" class="hidden"><label class="block text-sm font-medium text-siakad-secondary mb-1">Fakultas</label>
                         <select name="fakultas_id" id="editFakultasId" class="input-saas w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"><option value="">-- Pilih --</option>@foreach($fakultasList as $f)<option value="{{ $f->id }}">{{ $f->nama }}</option>@endforeach</select>
                     </div>
@@ -135,6 +145,7 @@
         function toggleFakultasField(prefix) {
             const role = document.getElementById(prefix + 'Role').value;
             document.getElementById(prefix + 'FakultasField').classList.toggle('hidden', role !== 'admin_fakultas');
+            document.getElementById(prefix + 'KampusField').classList.toggle('hidden', role !== 'admin_kampus');
         }
         function openEditModal(user) {
             document.getElementById('editForm').action = `/admin/users/${user.id}`;
@@ -142,6 +153,7 @@
             document.getElementById('editEmail').value = user.email;
             document.getElementById('editRole').value = user.role;
             document.getElementById('editFakultasId').value = user.fakultas_id || '';
+            document.getElementById('editKampusId').value = user.kampus_id || '';
             toggleFakultasField('edit');
             openModal('editModal');
         }

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Fakultas;
+use App\Models\Kampus;
 use App\Models\User;
 use App\Services\UserService;
+use App\Support\TenantManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -33,7 +35,7 @@ class UserController extends Controller
     {
         $this->authorizeSuperAdmin();
 
-        $query = User::with(['fakultas', 'mahasiswa.prodi', 'dosen.prodi']);
+        $query = User::with(['fakultas', 'mahasiswa.prodi', 'dosen.prodi', 'kampus']);
 
         // Search
         if ($search = $request->get('search')) {
@@ -61,7 +63,11 @@ class UserController extends Controller
         $users = $query->orderBy('name')->paginate(config('siakad.pagination', 15))->withQueryString();
         $fakultasList = Fakultas::orderBy('nama')->get();
 
-        return view('admin.users.index', compact('users', 'fakultasList'));
+        $kampusList = Kampus::active()->orderBy('nama')->get();
+
+        $currentKampusId = app(TenantManager::class)->id();
+
+        return view('admin.users.index', compact('users', 'fakultasList', 'kampusList', 'currentKampusId'));
     }
 
     public function store(Request $request)
@@ -74,12 +80,17 @@ class UserController extends Controller
             'password' => ['required', 'string', Password::min(8)],
             'role' => 'required|in:superadmin,admin_fakultas,admin_kampus,dosen,mahasiswa',
             'fakultas_id' => 'nullable|exists:fakultas,id',
+            'kampus_id' => 'required_if:role,admin_kampus|nullable|exists:kampus,id',
             // Polymorphic validation
             'nim' => 'required_if:role,mahasiswa|nullable|unique:mahasiswa,nim',
             'nidn' => 'required_if:role,dosen|nullable|unique:dosen,nidn',
             'prodi_id' => 'required_if:role,mahasiswa,dosen|nullable|exists:prodi,id',
             'angkatan' => 'required_if:role,mahasiswa|nullable|numeric',
         ]);
+
+        if ($validated['role'] !== 'admin_kampus') {
+            unset($validated['kampus_id']);
+        }
 
         try {
             $user = $this->userService->createUser($validated);
@@ -108,14 +119,21 @@ class UserController extends Controller
             'password' => ['nullable', 'string', Password::min(8)],
             'role' => 'required|in:superadmin,admin_fakultas,admin_kampus,dosen,mahasiswa',
             'fakultas_id' => 'nullable|exists:fakultas,id',
+            'kampus_id' => 'required_if:role,admin_kampus|nullable|exists:kampus,id',
         ]);
 
-        $user->update([
+        $updateData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'role' => $validated['role'],
             'fakultas_id' => $validated['fakultas_id'] ?? null,
-        ]);
+        ];
+
+        if ($validated['role'] === 'admin_kampus') {
+            $updateData['kampus_id'] = $validated['kampus_id'];
+        }
+
+        $user->update($updateData);
 
         if (! empty($validated['password'])) {
             $user->update(['password' => Hash::make($validated['password'])]);
