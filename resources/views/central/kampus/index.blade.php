@@ -21,8 +21,11 @@
                         <th class="text-left py-3 px-5 text-xs font-semibold text-siakad-secondary dark:text-gray-400 uppercase tracking-wider">Kampus</th>
                         <th class="text-left py-3 px-5 text-xs font-semibold text-siakad-secondary dark:text-gray-400 uppercase tracking-wider">Status</th>
                         <th class="text-left py-3 px-5 text-xs font-semibold text-siakad-secondary dark:text-gray-400 uppercase tracking-wider">Fakultas</th>
+                        <th class="text-left py-3 px-5 text-xs font-semibold text-siakad-secondary dark:text-gray-400 uppercase tracking-wider">Prodi</th>
                         <th class="text-left py-3 px-5 text-xs font-semibold text-siakad-secondary dark:text-gray-400 uppercase tracking-wider">Mahasiswa</th>
                         <th class="text-left py-3 px-5 text-xs font-semibold text-siakad-secondary dark:text-gray-400 uppercase tracking-wider">Dosen</th>
+                        <th class="text-left py-3 px-5 text-xs font-semibold text-siakad-secondary dark:text-gray-400 uppercase tracking-wider">Calon PMB</th>
+                        <th class="text-left py-3 px-5 text-xs font-semibold text-siakad-secondary dark:text-gray-400 uppercase tracking-wider">PMB Token</th>
                         <th class="text-right py-3 px-5 text-xs font-semibold text-siakad-secondary dark:text-gray-400 uppercase tracking-wider w-32">Aksi</th>
                     </tr>
                 </thead>
@@ -40,8 +43,17 @@
                         <td class="py-4 px-5">
                             <span class="inline-flex px-2.5 py-1 text-xs font-medium bg-siakad-primary/10 text-siakad-primary dark:bg-blue-500/10 dark:text-blue-400 rounded-full">{{ $k->fakultas_count }}</span>
                         </td>
+                        <td class="py-4 px-5 text-sm text-siakad-dark dark:text-white">{{ $k->prodi_count }}</td>
                         <td class="py-4 px-5 text-sm text-siakad-dark dark:text-white">{{ $k->mahasiswa_count }}</td>
                         <td class="py-4 px-5 text-sm text-siakad-dark dark:text-white">{{ $k->dosen_count }}</td>
+                        <td class="py-4 px-5 text-sm text-siakad-dark dark:text-white">{{ $k->calon_mahasiswa_count }}</td>
+                        <td class="py-4 px-5">
+                            @if($k->pmb_token)
+                                <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">Aktif</span>
+                            @else
+                                <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-500 dark:bg-gray-700/50 dark:text-gray-400">Belum</span>
+                            @endif
+                        </td>
                         <td class="py-4 px-5 text-right">
                             <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('central.kampus.edit', $k) }}" class="p-2 text-siakad-secondary hover:text-siakad-primary hover:bg-siakad-primary/10 rounded-lg transition" title="Edit">
@@ -58,7 +70,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="py-12 text-center">
+                        <td colspan="9" class="py-12 text-center">
                             <div class="flex flex-col items-center">
                                 <div class="w-12 h-12 bg-siakad-light/50 dark:bg-gray-700/50 rounded-xl flex items-center justify-center mb-3">
                                     <svg class="w-6 h-6 text-siakad-secondary dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>

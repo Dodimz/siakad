@@ -18,7 +18,7 @@ class KampusController extends Controller
     public function index(): View
     {
         $kampus = Kampus::query()
-            ->withCount(['fakultas', 'prodi', 'mahasiswa', 'dosen', 'users'])
+            ->withCount(['fakultas', 'prodi', 'mahasiswa', 'dosen', 'users', 'calonMahasiswa'])
             ->orderBy('nama')
             ->get();
 
