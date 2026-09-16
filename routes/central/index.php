@@ -3,6 +3,7 @@
 use App\Http\Controllers\Central\DashboardController;
 use App\Http\Controllers\Central\KampusController;
 use App\Http\Controllers\Central\PmbLogController;
+use App\Http\Controllers\Central\SettingController;
 use Illuminate\Support\Facades\Route;
 
 // Panel pusat superadmin (global, di luar prefix {kampus})
@@ -17,4 +18,6 @@ Route::middleware(['set.default.kampus', 'auth', 'role:superadmin'])
             ->except(['show'])
             ->parameters(['kampus' => 'kampus']);
         Route::get('/pmb-logs', [PmbLogController::class, 'index'])->name('pmb-logs.index');
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
     });
