@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Dosen;
 use App\Models\Fakultas;
 use App\Models\JadwalKuliah;
+use App\Models\Kampus;
 use App\Models\Kelas;
 use App\Models\Krs;
 use App\Models\KrsDetail;
@@ -15,6 +16,7 @@ use App\Models\Prodi;
 use App\Models\Ruangan;
 use App\Models\TahunAkademik;
 use App\Models\User;
+use App\Support\TenantManager;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -24,16 +26,23 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(SeedKampusBackfill::class);
 
+        // Konteks tenant dibuat eksplisit agar seluruh data seed di bawah ini
+        // otomatis terisi kampus_id = kampus-utama (trait BelongsToTenant).
+        $kampus = Kampus::where('slug', 'kampus-utama')->firstOrFail();
+
+        app(TenantManager::class)->set($kampus);
+
         $this->call(RolePermissionSeeder::class);
 
         // ==========================================
-        // 1. SUPERADMIN
+        // 1. SUPERADMIN (global: kampus_id null)
         // ==========================================
         User::create([
             'name' => 'Super Administrator',
             'email' => 'superadmin@siakad.test',
             'password' => Hash::make('password'),
             'role' => 'superadmin',
+            'kampus_id' => null,
         ]);
 
         // ==========================================

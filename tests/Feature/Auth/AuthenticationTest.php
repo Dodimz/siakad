@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Kampus;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -41,6 +42,39 @@ test('users can not authenticate with invalid password', function () {
 
     $this->assertGuest();
     $response->assertSessionHasErrors();
+});
+
+test('superadmin global (kampus_id null) dapat login di kampus mana pun', function () {
+    $superadmin = User::factory()->create([
+        'password' => Hash::make('password'),
+        'role' => 'superadmin',
+        'kampus_id' => null,
+    ]);
+
+    $response = $this->post($this->tenantPath('/login'), [
+        'email' => $superadmin->email,
+        'password' => 'password',
+    ]);
+
+    $this->assertAuthenticatedAs($superadmin);
+    $response->assertRedirect(route('admin.dashboard'));
+});
+
+test('pengguna milik kampus lain tidak dapat login di kampus ini', function () {
+    $kampusLain = Kampus::factory()->create(['slug' => 'kampus-b']);
+
+    $user = User::factory()->create([
+        'password' => Hash::make('password'),
+        'kampus_id' => $kampusLain->id,
+    ]);
+
+    $response = $this->post($this->tenantPath('/login'), [
+        'email' => $user->email,
+        'password' => 'password',
+    ]);
+
+    $this->assertGuest();
+    $response->assertSessionHasErrors(['email']);
 });
 
 test('users can not authenticate with invalid email', function () {

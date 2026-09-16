@@ -2,9 +2,14 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
+use App\Support\TenantManager;
 use Illuminate\Auth\Events\Lockout;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -22,7 +27,7 @@ class LoginRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -35,13 +40,26 @@ class LoginRequest extends FormRequest
     /**
      * Attempt to authenticate the request's credentials.
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $credentials = $this->only('email', 'password');
+
+        // Superadmin bersifat global (kampus_id null), sehingga login dilakukan
+        // tanpa global scope 'kampus' dan hanya menerima user milik kampus aktif
+        // atau superadmin global — isolasi antar-kampus tetap terjaga.
+        $user = User::withoutGlobalScope('kampus')
+            ->where('email', $credentials['email'])
+            ->where(fn (Builder $query) => $query
+                ->where('kampus_id', app(TenantManager::class)->id())
+                ->orWhereNull('kampus_id')
+            )
+            ->first();
+
+        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -50,12 +68,14 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+
+        Auth::login($user, $this->boolean('remember'));
     }
 
     /**
      * Ensure the login request is not rate limited.
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function ensureIsNotRateLimited(): void
     {
