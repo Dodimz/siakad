@@ -35,6 +35,7 @@ Route::group([
         $routes = [
             'superadmin' => 'admin.dashboard',
             'admin_fakultas' => 'admin.dashboard',
+            'admin_kampus' => 'admin.dashboard',
             'dosen' => 'dosen.dashboard',
             'mahasiswa' => 'mahasiswa.dashboard',
         ];

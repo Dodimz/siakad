@@ -13,6 +13,7 @@
                 <select name="role" class="input-saas px-4 py-2 text-sm dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300">
                     <option value="">Semua Role</option>
                     <option value="superadmin" {{ request('role') == 'superadmin' ? 'selected' : '' }}>Superadmin</option>
+                    <option value="admin_kampus" {{ request('role') == 'admin_kampus' ? 'selected' : '' }}>Admin Kampus</option>
                     <option value="admin_fakultas" {{ request('role') == 'admin_fakultas' ? 'selected' : '' }}>Admin Fakultas</option>
                     <option value="dosen" {{ request('role') == 'dosen' ? 'selected' : '' }}>Dosen</option>
                     <option value="mahasiswa" {{ request('role') == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
@@ -55,7 +56,7 @@
                         <td class="py-4 px-5 text-sm text-siakad-secondary">{{ $user->email }}</td>
                         <td class="py-4 px-5">
                             @php
-                                $roleColors = ['superadmin'=>'bg-purple-100 text-purple-800','admin'=>'bg-blue-100 text-blue-800','admin_fakultas'=>'bg-indigo-100 text-indigo-800','dosen'=>'bg-green-100 text-green-800','mahasiswa'=>'bg-yellow-100 text-yellow-800'];
+                                $roleColors = ['superadmin'=>'bg-purple-100 text-purple-800','admin'=>'bg-blue-100 text-blue-800','admin_kampus'=>'bg-cyan-100 text-cyan-800','admin_fakultas'=>'bg-indigo-100 text-indigo-800','dosen'=>'bg-green-100 text-green-800','mahasiswa'=>'bg-yellow-100 text-yellow-800'];
                             @endphp
                             <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full {{ $roleColors[$user->role] ?? 'bg-gray-100 text-gray-800' }}">{{ ucfirst(str_replace('_', ' ', $user->role)) }}</span>
                         </td>
@@ -92,7 +93,7 @@
                     <div><label class="block text-sm font-medium text-siakad-secondary mb-1">Password</label><input type="password" name="password" required minlength="8" class="input-saas w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"></div>
                     <div><label class="block text-sm font-medium text-siakad-secondary mb-1">Role</label>
                         <select name="role" id="createRole" required onchange="toggleFakultasField('create')" class="input-saas w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                            <option value="superadmin">Superadmin</option><option value="admin_fakultas">Admin Fakultas</option><option value="dosen">Dosen</option><option value="mahasiswa">Mahasiswa</option>
+                            <option value="superadmin">Superadmin</option><option value="admin_kampus">Admin Kampus</option><option value="admin_fakultas">Admin Fakultas</option><option value="dosen">Dosen</option><option value="mahasiswa">Mahasiswa</option>
                         </select>
                     </div>
                     <div id="createFakultasField" class="hidden"><label class="block text-sm font-medium text-siakad-secondary mb-1">Fakultas</label>
@@ -116,7 +117,7 @@
                     <div><label class="block text-sm font-medium text-siakad-secondary mb-1">Password (kosongkan jika tidak diubah)</label><input type="password" name="password" minlength="8" class="input-saas w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"></div>
                     <div><label class="block text-sm font-medium text-siakad-secondary mb-1">Role</label>
                         <select name="role" id="editRole" required onchange="toggleFakultasField('edit')" class="input-saas w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                            <option value="superadmin">Superadmin</option><option value="admin_fakultas">Admin Fakultas</option><option value="dosen">Dosen</option><option value="mahasiswa">Mahasiswa</option>
+                            <option value="superadmin">Superadmin</option><option value="admin_kampus">Admin Kampus</option><option value="admin_fakultas">Admin Fakultas</option><option value="dosen">Dosen</option><option value="mahasiswa">Mahasiswa</option>
                         </select>
                     </div>
                     <div id="editFakultasField" class="hidden"><label class="block text-sm font-medium text-siakad-secondary mb-1">Fakultas</label>

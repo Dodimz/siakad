@@ -77,6 +77,21 @@ test('pengguna milik kampus lain tidak dapat login di kampus ini', function () {
     $response->assertSessionHasErrors(['email']);
 });
 
+test('admin kampus diarahkan ke dashboard admin setelah login', function () {
+    $admin = User::factory()->create([
+        'password' => Hash::make('password'),
+        'role' => 'admin_kampus',
+    ]);
+
+    $response = $this->post($this->tenantPath('/login'), [
+        'email' => $admin->email,
+        'password' => 'password',
+    ]);
+
+    $this->assertAuthenticatedAs($admin);
+    $response->assertRedirect(route('admin.dashboard'));
+});
+
 test('users can not authenticate with invalid email', function () {
     $response = $this->post($this->tenantPath('/login'), [
         'email' => 'nonexistent@test.com',
