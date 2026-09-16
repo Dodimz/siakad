@@ -114,9 +114,13 @@ Akses: login sebagai user ber-role `superadmin`, lalu buka `/central`.
   user/mahasiswa/dosen, dan statistik calon PMB (total/pending/diterima/ditolak),
   plus rincian per kampus.
 - `/central/kampus` — CRUD kampus (nama, slug, kode, kontak, status).
+- `/central/pmb-logs` — log import PMB seluruh kampus (lihat bagian 5).
 
 Middleware `set.default.kampus` dijalankan lebih dulu agar pembangkit URL tenant
 (termasuk redirect login saat belum terautentikasi) memiliki konteks kampus.
+
+> Catatan: agregat pada dashboard `/central` memakai `withoutGlobalScope('kampus')`
+> sehingga menampilkan total **seluruh kampus**, bukan hanya kampus default.
 
 ---
 
@@ -199,6 +203,29 @@ Respons duplikat (`200`) — idempoten berdasarkan `no_pendaftar` **per kampus**
 
 Validasi gagal → `422` dengan format error standar Laravel.
 
+### Log import PMB
+
+Setiap request yang berhasil di-autentikasi mencatat satu baris ke tabel `pmb_import_logs`:
+
+| Kolom | Keterangan |
+|-------|------------|
+| `kampus_id` | kampus pemilik token |
+| `no_pendaftar` | nomor pendaftaran |
+| `nama` | nama calon |
+| `aksi` | `created` (baris calon baru) atau `duplicate` (idempoten, data sudah ada) |
+| `ip_address` | IP pengirim request |
+| `created_at` | saat kejadian |
+
+Aksi `duplicate` **bukan error** — status `200` sebagai respons idempoten; log tetap
+tercatat agar terlihat pola retry / kirim berulang dari sistem PMB.
+
+Riwayat dapat dilihat di:
+- `/{kampus}/admin/pmb-logs` — hanya log kampus aktif (ter-scope tenant).
+- `/central/pmb-logs` — log seluruh kampus (superadmin).
+
+> Log ditulis oleh `app/Http/Controllers/Api/PmbController.php` dan tenan-scoped lewat
+> trait `BelongsToTenant` model `App\Models\PmbImportLog`.
+
 ### Status calon mahasiswa
 
 | Status | Nilai | Arti |
@@ -245,6 +272,7 @@ php artisan test --compact
 php artisan test --compact tests/Feature/Central/CentralPanelTest.php
 php artisan test --compact tests/Feature/Admin/CalonMahasiswaTest.php
 php artisan test --compact tests/Feature/Pmb/PmbApiTest.php
+php artisan test --compact tests/Feature/Pmb/PmbLogTest.php
 ```
 
 `tests/TestCase.php` menyiapkan kampus `kampus-utama` dan mengisi konteks tenant untuk
