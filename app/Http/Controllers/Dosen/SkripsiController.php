@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Dosen;
 
 use App\Http\Controllers\Controller;
-use App\Models\Skripsi;
 use App\Models\BimbinganSkripsi;
 use App\Models\Dosen;
+use App\Models\Skripsi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,8 +14,8 @@ class SkripsiController extends Controller
     public function index()
     {
         $dosen = Auth::user()->dosen;
-        
-        if (!$dosen) {
+
+        if (! $dosen) {
             abort(403);
         }
 
@@ -23,7 +23,7 @@ class SkripsiController extends Controller
         $skripsiList = Skripsi::where('pembimbing1_id', $dosen->id)
             ->orWhere('pembimbing2_id', $dosen->id)
             ->with(['mahasiswa.user', 'pembimbing1.user', 'pembimbing2.user'])
-            ->orderByRaw("FIELD(status, 'bimbingan', 'pengajuan', 'review', 'seminar_proposal', 'penelitian', 'seminar_hasil', 'sidang', 'revisi', 'selesai', 'ditolak', 'diterima')")
+            ->orderByRaw("CASE status WHEN 'bimbingan' THEN 0 WHEN 'pengajuan' THEN 1 WHEN 'review' THEN 2 WHEN 'seminar_proposal' THEN 3 WHEN 'penelitian' THEN 4 WHEN 'seminar_hasil' THEN 5 WHEN 'sidang' THEN 6 WHEN 'revisi' THEN 7 WHEN 'selesai' THEN 8 WHEN 'ditolak' THEN 9 WHEN 'diterima' THEN 10 ELSE 99 END")
             ->get();
 
         // Pending bimbingan
@@ -79,7 +79,7 @@ class SkripsiController extends Controller
         }
 
         $validated = $request->validate([
-            'status' => 'required|in:' . implode(',', array_keys(Skripsi::getStatusList())),
+            'status' => 'required|in:'.implode(',', array_keys(Skripsi::getStatusList())),
         ]);
 
         $skripsi->update(['status' => $validated['status']]);

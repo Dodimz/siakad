@@ -10,116 +10,91 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
-    $this->admin = User::factory()->create([
-        'role' => 'admin_fakultas',
-        'name' => 'Admin User',
-        'email' => 'admin@test.com',
+function crudAdmin(): User
+{
+    return User::factory()->create([
+        'role' => 'superadmin',
+        'name' => 'Super Admin',
+        'email' => 'superadmin@test.com',
     ]);
-});
+}
 
-test('admin can view fakultas list', function () {
+test('superadmin can view fakultas list', function () {
     Fakultas::factory()->count(3)->create();
 
-    $response = $this->actingAs($this->admin)->get(route('admin.fakultas.index'));
+    $response = $this->actingAs(crudAdmin())->get(route('admin.fakultas.index'));
 
-    $response->assertStatus(200);
+    $response->assertOk();
     $response->assertViewIs('admin.fakultas.index');
     $response->assertViewHas('fakultas');
 });
 
-test('admin can view create fakultas form', function () {
-    $response = $this->actingAs($this->admin)->get(route('admin.fakultas.create'));
-
-    $response->assertStatus(200);
-    $response->assertViewIs('admin.fakultas.create');
-});
-
-test('admin can create fakultas', function () {
-    $response = $this->actingAs($this->admin)->post(route('admin.fakultas.store'), [
+test('superadmin can create fakultas', function () {
+    $response = $this->actingAs(crudAdmin())->post(route('admin.fakultas.store'), [
         'nama' => 'Fakultas Teknik Test',
-        'kode' => 'FT',
     ]);
 
-    $response->assertRedirect(route('admin.fakultas.index'));
+    $response->assertRedirect();
     $response->assertSessionHas('success');
 
-    $this->assertDatabaseHas('fakultas', [
-        'nama' => 'Fakultas Teknik Test',
-        'kode' => 'FT',
-    ]);
+    $this->assertDatabaseHas('fakultas', ['nama' => 'Fakultas Teknik Test']);
 });
 
-test('admin cannot create fakultas with invalid data', function () {
-    $response = $this->actingAs($this->admin)->post(route('admin.fakultas.store'), [
-        'nama' => '', // Empty name should fail validation
-    ]);
+test('superadmin cannot create fakultas with invalid data', function () {
+    $this->actingAs(crudAdmin())->post(route('admin.fakultas.store'), [
+        'nama' => '',
+    ])->assertSessionHasErrors(['nama']);
 
-    $response->assertSessionHasErrors(['nama']);
     $this->assertDatabaseMissing('fakultas', ['nama' => '']);
 });
 
-test('admin can view edit fakultas form', function () {
-    $fakultas = Fakultas::factory()->create();
-
-    $response = $this->actingAs($this->admin)->get(route('admin.fakultas.edit', $fakultas));
-
-    $response->assertStatus(200);
-    $response->assertViewIs('admin.fakultas.edit');
-    $response->assertViewHas('fakultas', $fakultas);
-});
-
-test('admin can update fakultas', function () {
+test('superadmin can update fakultas', function () {
     $fakultas = Fakultas::factory()->create(['nama' => 'Old Name']);
 
-    $response = $this->actingAs($this->admin)->put(route('admin.fakultas.update', $fakultas), [
+    $this->actingAs(crudAdmin())->put(route('admin.fakultas.update', $fakultas), [
         'nama' => 'Updated Name',
-        'kode' => $fakultas->kode,
-    ]);
+    ])->assertRedirect()
+        ->assertSessionHas('success');
 
-    $response->assertRedirect(route('admin.fakultas.index'));
     $this->assertDatabaseHas('fakultas', ['nama' => 'Updated Name']);
     $this->assertDatabaseMissing('fakultas', ['nama' => 'Old Name']);
 });
 
-test('admin can delete fakultas', function () {
+test('superadmin can delete fakultas', function () {
     $fakultas = Fakultas::factory()->create();
 
-    $response = $this->actingAs($this->admin)->delete(route('admin.fakultas.destroy', $fakultas));
+    $this->actingAs(crudAdmin())->delete(route('admin.fakultas.destroy', $fakultas))
+        ->assertRedirect()
+        ->assertSessionHas('success');
 
-    $response->assertRedirect(route('admin.fakultas.index'));
     $this->assertDatabaseMissing('fakultas', ['id' => $fakultas->id]);
 });
 
-test('admin can view prodi list', function () {
+test('admin fakultas cannot manage fakultas', function () {
+    $admin = User::factory()->create(['role' => 'admin_fakultas']);
+
+    $this->actingAs($admin)->get(route('admin.fakultas.index'))->assertForbidden();
+    $this->actingAs($admin)->post(route('admin.fakultas.store'), ['nama' => 'X'])->assertForbidden();
+});
+
+test('superadmin can view prodi list', function () {
     Prodi::factory()->count(3)->create();
 
-    $response = $this->actingAs($this->admin)->get(route('admin.prodi.index'));
+    $response = $this->actingAs(crudAdmin())->get(route('admin.prodi.index'));
 
-    $response->assertStatus(200);
+    $response->assertOk();
     $response->assertViewIs('admin.prodi.index');
-    $response->assertViewHas('prodi');
+    $response->assertViewHas('fakultas');
 });
 
-test('admin can view create prodi form', function () {
-    $response = $this->actingAs($this->admin)->get(route('admin.prodi.create'));
-
-    $response->assertStatus(200);
-    $response->assertViewIs('admin.prodi.create');
-});
-
-test('admin can create prodi', function () {
+test('superadmin can create prodi', function () {
     $fakultas = Fakultas::factory()->create();
 
-    $response = $this->actingAs($this->admin)->post(route('admin.prodi.store'), [
+    $this->actingAs(crudAdmin())->post(route('admin.prodi.store'), [
         'fakultas_id' => $fakultas->id,
         'nama' => 'Teknik Informatika Test',
-        'kode' => 'TI',
-        'jenjang' => 'S1',
-    ]);
-
-    $response->assertRedirect(route('admin.prodi.index'));
-    $response->assertSessionHas('success');
+    ])->assertRedirect()
+        ->assertSessionHas('success');
 
     $this->assertDatabaseHas('prodi', [
         'nama' => 'Teknik Informatika Test',
@@ -127,49 +102,67 @@ test('admin can create prodi', function () {
     ]);
 });
 
-test('admin cannot create prodi with invalid fakultas', function () {
-    $response = $this->actingAs($this->admin)->post(route('admin.prodi.store'), [
-        'fakultas_id' => 999999, // Non-existent fakultas
+test('superadmin cannot create prodi with invalid fakultas', function () {
+    $this->actingAs(crudAdmin())->post(route('admin.prodi.store'), [
+        'fakultas_id' => 999999,
         'nama' => 'Test Prodi',
-        'kode' => 'TP',
-    ]);
-
-    $response->assertSessionHasErrors(['fakultas_id']);
+    ])->assertSessionHasErrors(['fakultas_id']);
 });
 
-test('admin can view edit prodi form', function () {
-    $prodi = Prodi::factory()->create();
-
-    $response = $this->actingAs($this->admin)->get(route('admin.prodi.edit', $prodi));
-
-    $response->assertStatus(200);
-    $response->assertViewIs('admin.prodi.edit');
-    $response->assertViewHas('prodi', $prodi);
-});
-
-test('admin can update prodi', function () {
+test('superadmin can update prodi', function () {
     $prodi = Prodi::factory()->create(['nama' => 'Old Prodi']);
     $fakultas = Fakultas::factory()->create();
 
-    $response = $this->actingAs($this->admin)->put(route('admin.prodi.update', $prodi), [
+    $this->actingAs(crudAdmin())->put(route('admin.prodi.update', $prodi), [
         'fakultas_id' => $fakultas->id,
         'nama' => 'Updated Prodi',
-        'kode' => $prodi->kode,
-        'jenjang' => $prodi->jenjang,
-    ]);
+    ])->assertRedirect()
+        ->assertSessionHas('success');
 
-    $response->assertRedirect(route('admin.prodi.index'));
     $this->assertDatabaseHas('prodi', ['nama' => 'Updated Prodi']);
     $this->assertDatabaseMissing('prodi', ['nama' => 'Old Prodi']);
 });
 
-test('admin can delete prodi', function () {
+test('superadmin can delete prodi', function () {
     $prodi = Prodi::factory()->create();
 
-    $response = $this->actingAs($this->admin)->delete(route('admin.prodi.destroy', $prodi));
+    $this->actingAs(crudAdmin())->delete(route('admin.prodi.destroy', $prodi))
+        ->assertRedirect()
+        ->assertSessionHas('success');
 
-    $response->assertRedirect(route('admin.prodi.index'));
     $this->assertDatabaseMissing('prodi', ['id' => $prodi->id]);
+});
+
+test('admin fakultas dapat membuat prodi di fakultasnya sendiri', function () {
+    $fakultas = Fakultas::factory()->create();
+    $admin = User::factory()->create([
+        'role' => 'admin_fakultas',
+        'fakultas_id' => $fakultas->id,
+    ]);
+
+    $response = $this->actingAs($admin)->post(route('admin.prodi.store'), [
+        'fakultas_id' => $fakultas->id,
+        'nama' => 'Prodi Fakultas Sendiri',
+    ]);
+
+    $response->assertRedirect();
+    $this->assertDatabaseHas('prodi', ['nama' => 'Prodi Fakultas Sendiri']);
+});
+
+test('admin fakultas tidak dapat membuat prodi di fakultas lain', function () {
+    $fakultasSendiri = Fakultas::factory()->create();
+    $fakultasLain = Fakultas::factory()->create();
+    $admin = User::factory()->create([
+        'role' => 'admin_fakultas',
+        'fakultas_id' => $fakultasSendiri->id,
+    ]);
+
+    $this->actingAs($admin)->post(route('admin.prodi.store'), [
+        'fakultas_id' => $fakultasLain->id,
+        'nama' => 'Prodi Curi',
+    ])->assertForbidden();
+
+    $this->assertDatabaseMissing('prodi', ['nama' => 'Prodi Curi']);
 });
 
 test('non-admin cannot access admin fakultas routes', function () {
@@ -180,9 +173,7 @@ test('non-admin cannot access admin fakultas routes', function () {
         'prodi_id' => $prodi->id,
     ]);
 
-    $response = $this->actingAs($mahasiswaUser)->get(route('admin.fakultas.index'));
-
-    $response->assertStatus(403);
+    $this->actingAs($mahasiswaUser)->get(route('admin.fakultas.index'))->assertForbidden();
 });
 
 test('non-admin cannot access admin prodi routes', function () {
@@ -193,21 +184,15 @@ test('non-admin cannot access admin prodi routes', function () {
         'prodi_id' => $prodi->id,
     ]);
 
-    $response = $this->actingAs($mahasiswaUser)->get(route('admin.prodi.index'));
-
-    $response->assertStatus(403);
+    $this->actingAs($mahasiswaUser)->get(route('admin.prodi.index'))->assertForbidden();
 });
 
 test('dosen cannot access admin routes', function () {
     $dosenUser = User::factory()->create(['role' => 'dosen']);
 
-    $response = $this->actingAs($dosenUser)->get(route('admin.fakultas.index'));
-
-    $response->assertStatus(403);
+    $this->actingAs($dosenUser)->get(route('admin.fakultas.index'))->assertForbidden();
 });
 
 test('guest cannot access admin routes', function () {
-    $response = $this->get(route('admin.fakultas.index'));
-
-    $response->assertRedirect(route('login'));
+    $this->get(route('admin.fakultas.index'))->assertRedirect(route('login'));
 });

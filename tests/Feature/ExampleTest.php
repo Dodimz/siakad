@@ -1,7 +1,7 @@
 <?php
 
-it('returns a successful response', function () {
+it('redirects to the kampus login page', function () {
     $response = $this->get('/');
 
-    $response->assertStatus(200);
+    $response->assertRedirect($this->tenantPath('/login'));
 });

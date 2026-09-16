@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\JadwalKuliah;
-use App\Models\Kelas;
 use App\Models\Dosen;
+use App\Models\JadwalKuliah;
 use App\Models\Mahasiswa;
 use Illuminate\Support\Collection;
 
@@ -16,10 +15,10 @@ class JadwalService
     public function checkDosenConflict(Dosen $dosen, string $hari, string $jamMulai, string $jamSelesai, ?int $excludeId = null): ?JadwalKuliah
     {
         $kelasIds = $dosen->kelas()->pluck('id');
-        
+
         return JadwalKuliah::whereIn('kelas_id', $kelasIds)
             ->where('hari', $hari)
-            ->when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
+            ->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))
             ->get()
             ->first(function ($jadwal) use ($jamMulai, $jamSelesai) {
                 return $this->timeOverlaps($jadwal->jam_mulai, $jadwal->jam_selesai, $jamMulai, $jamSelesai);
@@ -33,7 +32,7 @@ class JadwalService
     {
         return JadwalKuliah::where('ruangan', $ruangan)
             ->where('hari', $hari)
-            ->when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
+            ->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))
             ->get()
             ->first(function ($jadwal) use ($jamMulai, $jamSelesai) {
                 return $this->timeOverlaps($jadwal->jam_mulai, $jadwal->jam_selesai, $jamMulai, $jamSelesai);
@@ -51,7 +50,7 @@ class JadwalService
             ->first()
             ?->krsDetail;
 
-        if (!$krsDetail) {
+        if (! $krsDetail) {
             return collect();
         }
 
@@ -59,7 +58,7 @@ class JadwalService
 
         return JadwalKuliah::whereIn('kelas_id', $kelasIds)
             ->with('kelas.mataKuliah', 'kelas.dosen.user')
-            ->orderByRaw("FIELD(hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu')")
+            ->orderByRaw("CASE hari WHEN 'Senin' THEN 0 WHEN 'Selasa' THEN 1 WHEN 'Rabu' THEN 2 WHEN 'Kamis' THEN 3 WHEN 'Jumat' THEN 4 WHEN 'Sabtu' THEN 5 ELSE 99 END")
             ->orderBy('jam_mulai')
             ->get();
     }
@@ -73,7 +72,7 @@ class JadwalService
 
         return JadwalKuliah::whereIn('kelas_id', $kelasIds)
             ->with('kelas.mataKuliah')
-            ->orderByRaw("FIELD(hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu')")
+            ->orderByRaw("CASE hari WHEN 'Senin' THEN 0 WHEN 'Selasa' THEN 1 WHEN 'Rabu' THEN 2 WHEN 'Kamis' THEN 3 WHEN 'Jumat' THEN 4 WHEN 'Sabtu' THEN 5 ELSE 99 END")
             ->orderBy('jam_mulai')
             ->get();
     }
@@ -83,6 +82,6 @@ class JadwalService
      */
     private function timeOverlaps($start1, $end1, $start2, $end2): bool
     {
-        return !($end1 <= $start2 || $start1 >= $end2);
+        return ! ($end1 <= $start2 || $start1 >= $end2);
     }
 }
