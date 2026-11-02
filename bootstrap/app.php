@@ -40,6 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
         // Global middleware - applies to all requests
         $middleware->append(SecurityHeadersMiddleware::class);
 
