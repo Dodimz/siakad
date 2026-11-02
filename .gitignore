@@ -22,3 +22,11 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+debug_*.php
+debug_output.txt
+.mcp.json
+.cursor/
+.opencode/
+opencode.json
+skills/
+k8s/21-app-secret.yaml

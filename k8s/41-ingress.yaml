@@ -1,0 +1,21 @@
+# Traefik adalah ingress bawaan k3s.
+# TLS di-terminate oleh Cloudflare (tunnel -> http), jadi backend http biasa.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: siakad
+  namespace: siakad
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  rules:
+    - host: eduvers.my.id
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: siakad
+                port:
+                  number: 80

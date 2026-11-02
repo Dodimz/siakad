@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: siakad-migrate
+  namespace: siakad
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: ghcr.io/ISI_USER_GITHUB/siakad:v1
+          command: [sh, -c]
+          args:
+            - |
+              for i in $(seq 1 30); do
+                php artisan db:show --no-ansi >/dev/null 2>&1 && break
+                echo "tunggu mysql... $i/30"; sleep 5
+              done
+              php artisan migrate --force --no-ansi
+          envFrom:
+            - configMapRef:
+                name: siakad-app
+            - secretRef:
+                name: siakad-app

@@ -1,0 +1,41 @@
+# OPSIONAL — cloudflared sebagai Deployment di dalam k3s.
+# Alternatif: install cloudflared langsung di host Ubuntu (lebih mudah untuk belajar).
+# Cara pakai opsi ini:
+#   1. Di dashboard Zero Trust -> Networks -> Tunnels, salin token tunnel siakad.
+#   2. kubectl -n siakad create secret generic cloudflared-token --from-literal=token=ISI_TOKEN
+#   3. kubectl apply -f k8s/50-cloudflared.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared
+  namespace: siakad
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudflared
+  template:
+    metadata:
+      labels:
+        app: cloudflared
+    spec:
+      containers:
+        - name: cloudflared
+          image: cloudflare/cloudflared:2024.10.0
+          args:
+            - tunnel
+            - --no-autoupdate
+            - run
+          env:
+            - name: TUNNEL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflared-token
+                  key: token
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi

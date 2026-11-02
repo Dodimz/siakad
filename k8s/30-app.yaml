@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: siakad
+  namespace: siakad
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: siakad
+  template:
+    metadata:
+      labels:
+        app: siakad
+    spec:
+      containers:
+        - name: siakad
+          image: ghcr.io/ISI_USER_GITHUB/siakad:v1
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: siakad-app
+            - secretRef:
+                name: siakad-app
+          livenessProbe:
+            httpGet:
+              path: /up
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /up
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 768Mi
