@@ -4,7 +4,8 @@ metadata:
   name: siakad
   namespace: siakad
 spec:
-  replicas: 2
+  # 1 replica karena storage upload memakai PVC ReadWriteOnce.
+  replicas: 1
   selector:
     matchLabels:
       app: siakad
@@ -13,9 +14,14 @@ spec:
       labels:
         app: siakad
     spec:
+      imagePullSecrets:
+        - name: ghcr-auth
+      securityContext:
+        fsGroup: 33
       containers:
         - name: siakad
-          image: ghcr.io/ISI_USER_GITHUB/siakad:v1
+          image: ghcr.io/dodimz/siakad:v1
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           envFrom:
@@ -23,6 +29,9 @@ spec:
                 name: siakad-app
             - secretRef:
                 name: siakad-app
+          volumeMounts:
+            - name: storage
+              mountPath: /var/www/html/storage/app
           livenessProbe:
             httpGet:
               path: /up
@@ -42,3 +51,7 @@ spec:
             limits:
               cpu: "1"
               memory: 768Mi
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: siakad-storage

@@ -8,6 +8,7 @@ fi
 
 chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+mkdir -p storage/app/public storage/app/private 2>/dev/null || true
 php artisan storage:link 2>/dev/null || true
 
 if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then

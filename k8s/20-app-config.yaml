@@ -16,6 +16,7 @@ data:
   DB_DATABASE: siakad
   DB_USERNAME: siakad
   SESSION_DRIVER: database
+  SESSION_SECURE_COOKIE: "true"
   CACHE_STORE: database
   QUEUE_CONNECTION: database
   RUN_MIGRATIONS: "false"

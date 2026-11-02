@@ -10,22 +10,27 @@ COPY public ./public
 RUN npm run build
 
 # ---------- Stage 2: runtime PHP + Apache ----------
-FROM php:8.3-apache-bookworm
+FROM php:8.4-apache-bookworm
 
 ENV COMPOSER_ALLOW_SUPERUSER=1 \
     APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates \
         curl \
         git \
         unzip \
+        pkg-config \
+        libfreetype6-dev \
         libpng-dev \
         libjpeg-dev \
         libwebp-dev \
         libzip-dev \
         libicu-dev \
         libonig-dev \
-    && docker-php-ext-configure gd --with-jpeg --with-webp \
+        libxml2-dev \
+        libsqlite3-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j"$(nproc)" \
         pdo_mysql \
         pdo_sqlite \
@@ -38,6 +43,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pcntl \
         zip \
     && a2enmod rewrite headers \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -49,10 +55,12 @@ RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-in
 
 COPY . .
 COPY --from=frontend /app/public/build ./public/build
-RUN composer dump-autoload --optimize --no-dev --classmap-authoritative \
+RUN touch database/database.sqlite \
+    && composer dump-autoload --optimize --no-dev --classmap-authoritative \
+    && php artisan storage:link \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache \
-    && php artisan storage:link || true
+    && rm -f database/database.sqlite
 
 COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
